@@ -1,0 +1,615 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WallHaven | Premium Wallpapers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0714;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 8%;
+            background: #120b20;
+            border-bottom: 1px solid #332044;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #c084fc;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 75px 20px 45px;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 6vw, 55px);
+            margin-bottom: 16px;
+        }
+
+        .hero span {
+            color: #c084fc;
+        }
+
+        .hero p {
+            color: #b9adc9;
+            line-height: 1.7;
+        }
+
+        .search {
+            margin-top: 25px;
+            padding: 14px;
+            width: min(90%, 420px);
+            border: 1px solid #65428b;
+            border-radius: 10px;
+            background: #1a1028;
+            color: white;
+            font-size: 16px;
+        }
+
+        .gallery {
+            padding: 25px 8% 70px;
+        }
+
+        .gallery h2 {
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: #171022;
+            border: 1px solid #30203f;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #a855f7;
+        }
+
+        .preview {
+            height: 230px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, #38145c, #111827, #7028a8);
+            color: #ead5ff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .details {
+            padding: 18px;
+        }
+
+        .details p {
+            color: #b9adc9;
+            margin: 10px 0 16px;
+            font-size: 14px;
+        }
+
+        .buy {
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            background: #9333ea;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .buy:hover {
+            background: #a855f7;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #998ba9;
+            border-top: 1px solid #30203f;
+        }
+
+
+#admin {
+    display: none;
+    max-width: 400px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #171022;
+    border: 1px solid #a855f7;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
+    color: white;
+}
+
+#admin h2 {
+    color: #c084fc;
+    margin-bottom: 10px;
+}
+
+#admin form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+#admin input {
+    padding: 12px;
+    border: 1px solid #49305f;
+    border-radius: 8px;
+    background: #0d0914;
+    color: white;
+    outline: none;
+}
+
+#admin-message {
+    margin-top: 12px;
+}
+
+#admin form {
+    margin-top: 24px;
+}
+
+#admin > p:first-of-type {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+
+    </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+
+    <header>
+        <div class="logo">WallHaven.</div>
+        <a href="#gallery">Explore Wallpapers</a>
+	<a href="#admin">Admin Login</a>
+    </header>
+
+    <section class="hero">
+        <h1>Your Screen, <span>Your Style.</span></h1>
+        <p>Discover premium wallpapers for your PC and mobile.</p>
+        <input
+            class="search"
+            id="search"
+            type="text"
+            placeholder="Search wallpapers..."
+        >
+    </section>
+
+<section class="admin-section" id="admin">
+    <h2>Admin Login</h2>
+    <p>Login to manage your wallpapers.</p>
+
+    <form id="admin-login-form">
+        <input
+            type="email"
+            id="admin-email"
+            placeholder="Admin email"
+            required
+        >
+
+        <input
+            type="password"
+            id="admin-password"
+            placeholder="Password"
+            required
+        >
+
+        <button type="submit" class="buy">Login</button>
+    </form>
+
+    <p id="admin-message"></p>
+
+<div id="admin-dashboard" style="display:none; margin-top:25px;">
+    <h2>Wallpaper Dashboard</h2>
+    <p>Upload a new premium PC wallpaper.</p>
+
+    <form id="upload-form">
+        <input type="text" id="wallpaper-title"
+               placeholder="Wallpaper title" required>
+
+        <textarea id="wallpaper-description"
+                  placeholder="Wallpaper description"></textarea>
+
+        <input type="text" id="wallpaper-category"
+               placeholder="Category (Anime, Gaming...)" required>
+
+        <input type="number" id="wallpaper-price"
+               placeholder="Price in ₹" min="1" step="0.01" required>
+
+        <input type="file" id="wallpaper-file"
+               accept="image/*" required>
+
+        <button type="submit" class="buy">Upload Wallpaper</button>
+    </form>
+
+    <p id="upload-message"></p>
+</div>
+
+</section>
+
+
+    <section class="gallery" id="gallery">
+        <h2>Explore Wallpapers</h2>
+        <div class="cards" id="cards">
+            <article class="card" data-title="Gaming Neon">
+                <div class="preview">GAMING</div>
+                <div class="details">
+                    <h3>Gaming Neon</h3>
+                    <p>Neon-inspired gaming wallpaper preview.</p>
+                    <button class="buy" onclick="demoBuy()">
+                        Preview Demo · ₹49
+                    </button>
+                </div>
+            </article>
+
+            <article class="card" data-title="Purple Galaxy">
+                <div class="preview">GALAXY</div>
+                <div class="details">
+                    <h3>Purple Galaxy</h3>
+                    <p>A purple cosmic wallpaper preview.</p>
+                    <button class="buy" onclick="demoBuy()">
+                        Preview Demo · ₹29
+                    </button>
+                </div>
+            </article>
+
+            <article class="card" data-title="Dark Anime">
+                <div class="preview">ANIME</div>
+                <div class="details">
+                    <h3>Dark Anime</h3>
+                    <p>A dark anime-inspired wallpaper preview.</p>
+                    <button class="buy" onclick="demoBuy()">
+                        Preview Demo · ₹39
+                    </button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 WallHaven · Your wallpaper destination
+    </footer>
+
+    <script>
+
+const SUPABASE_URL = "https://vxtryneiljxvrnakubdd.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_p1qEiO-agXUY6iyxH8OJnQ_rU0gg7Yp";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+
+async function loadWallpapers() {
+    const { data, error } = await supabaseClient
+        .from("wallpapers")
+        .select("*")
+        .eq("is_published", true);
+
+    if (error) {
+        console.error("Wallpaper loading error:", error.message);
+        return;
+    }
+
+    const cardsContainer = document.getElementById("cards");
+    cardsContainer.innerHTML = "";
+
+    data.forEach((wallpaper) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.dataset.title = wallpaper.title;
+
+        const preview = document.createElement("div");
+        preview.className = "preview";
+
+        if (wallpaper.preview_url) {
+            const img = document.createElement("img");
+            img.src = wallpaper.preview_url;
+            img.alt = wallpaper.title;
+            img.style.width = "100%";
+            img.style.height = "230px";
+            img.style.objectFit = "cover";
+            preview.appendChild(img);
+        } else {
+            preview.textContent = wallpaper.category || "WALLPAPER";
+        }
+
+        const details = document.createElement("div");
+        details.className = "details";
+
+        const title = document.createElement("h3");
+        title.textContent = wallpaper.title;
+
+        const description = document.createElement("p");
+        description.textContent =
+            wallpaper.description || "Premium Pc Wallpaper";
+
+        const button = document.createElement("button");
+        button.className = "buy";
+        
+button.textContent =
+    "Buy Wallpaper : ₹" +
+    (Number(wallpaper.price_paise || 0) / 100).toFixed(2);
+
+
+
+        button.onclick = function (event) {
+    demoBuy(event);
+};
+
+        details.append(title, description, button);
+        card.append(preview, details);
+        cardsContainer.appendChild(card);
+    });
+
+    console.log("Wallpapers displayed:", data.length);
+}
+
+loadWallpapers();
+
+document.querySelector('a[href="#admin"]').addEventListener("click", function (event) {
+    event.preventDefault();
+
+    const adminSection = document.getElementById("admin");
+
+    if (adminSection.style.display === "none" ||
+        getComputedStyle(adminSection).display === "none") {
+        adminSection.style.display = "block";
+        adminSection.scrollIntoView({ behavior: "smooth" });
+    } else {
+        adminSection.style.display = "none";
+    }
+});
+
+
+
+
+       
+
+function demoBuy(event) {
+    const qrWindow = document.getElementById("upi-payment-box");
+    const amountLabel = document.getElementById("upi-amount");
+    const button = event.currentTarget;
+    const priceText = button.textContent.match(/₹\s*([\d.]+)/);
+
+    if (qrWindow && amountLabel && priceText) {
+        amountLabel.textContent =
+            "₹" + Number(priceText[1]).toFixed(2);
+        qrWindow.style.display = "flex";
+    }
+}
+
+
+        document.getElementById("search").addEventListener("input", function () {
+            const term = this.value.toLowerCase();
+
+            document.querySelectorAll(".card").forEach(function (card) {
+                card.style.display =
+                    card.dataset.title.toLowerCase().includes(term)
+                        ? ""
+                        : "none";
+            });
+        });
+
+document.getElementById("admin-login-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("admin-email").value;
+    const password = document.getElementById("admin-password").value;
+    const message = document.getElementById("admin-message");
+
+    message.textContent = "Logging in...";
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        message.textContent = "Login failed: " + error.message;
+        return;
+    }
+
+    message.textContent = "Login successful! Welcome, Admin.";
+    
+    document.getElementById("admin-dashboard").style.display = "block";
+
+    console.log("Admin login successful:", data.user.email);
+});
+
+document.getElementById("upload-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const message = document.getElementById("upload-message");
+    const form = document.getElementById("upload-form");
+
+    const title = document.getElementById("wallpaper-title").value.trim();
+    const description = document.getElementById("wallpaper-description").value.trim();
+    const category = document.getElementById("wallpaper-category").value.trim();
+    const price = Number(document.getElementById("wallpaper-price").value);
+    const file = document.getElementById("wallpaper-file").files[0];
+
+    if (!file || !title || !category || !Number.isFinite(price) || price <= 0) {
+        message.textContent = "Please fill in all required fields.";
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        message.textContent = "Please select an image file.";
+        return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+        message.textContent = "Image must be smaller than 15 MB.";
+        return;
+    }
+
+    message.textContent = "Preparing wallpaper preview...";
+
+    let originalPath = null;
+    let previewPath = null;
+
+    try {
+        const id = crypto.randomUUID();
+
+        const extension = file.name.split(".").pop().toLowerCase();
+        const safeExtension = /^[a-z0-9]+$/.test(extension) ? extension : "jpg";
+
+        originalPath = id + "." + safeExtension;
+        previewPath = id + ".jpg";
+
+        // Create a smaller JPEG preview in the browser.
+        const image = new Image();
+        const objectUrl = URL.createObjectURL(file);
+
+        try {
+            await new Promise((resolve, reject) => {
+                image.onload = resolve;
+                image.onerror = () => reject(new Error("Could not read this image."));
+                image.src = objectUrl;
+            });
+
+            const maxDimension = 1200;
+            const scale = Math.min(
+                1,
+                maxDimension / Math.max(image.naturalWidth, image.naturalHeight)
+            );
+
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+            canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+            const context = canvas.getContext("2d");
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            const previewBlob = await new Promise((resolve, reject) => {
+                canvas.toBlob(
+                    blob => blob ? resolve(blob) : reject(new Error("Preview creation failed.")),
+                    "image/jpeg",
+                    0.7
+                );
+            });
+
+            message.textContent = "Uploading private original...";
+
+            const { error: originalError } = await supabaseClient.storage
+                .from("wallpaper-files")
+                .upload(originalPath, file, {
+                    contentType: file.type,
+                    upsert: false
+                });
+
+            if (originalError) {
+                throw new Error("Original upload failed: " + originalError.message);
+            }
+
+            message.textContent = "Uploading public preview...";
+
+            const { error: previewError } = await supabaseClient.storage
+                .from("wallpaper-previews")
+                .upload(previewPath, previewBlob, {
+                    contentType: "image/jpeg",
+                    upsert: false
+                });
+
+            if (previewError) {
+                throw new Error("Preview upload failed: " + previewError.message);
+            }
+
+        } finally {
+            URL.revokeObjectURL(objectUrl);
+        }
+
+        const { data: previewData } = supabaseClient.storage
+            .from("wallpaper-previews")
+            .getPublicUrl(previewPath);
+
+        message.textContent = "Saving wallpaper to the gallery...";
+
+        const { error: insertError } = await supabaseClient
+            .from("wallpapers")
+            .insert({
+                title: title,
+                description: description,
+                category: category,
+                price_paise: Math.round(price * 100),
+                storage_path: originalPath,
+                preview_url: previewData.publicUrl,
+                is_published: true
+            });
+
+        if (insertError) {
+            throw new Error("Database save failed: " + insertError.message);
+        }
+
+        await loadWallpapers();
+
+        message.textContent = "Success! Wallpaper published to the homepage.";
+        form.reset();
+
+    } catch (error) {
+        message.textContent = error.message || "Upload failed. Please try again.";
+        console.error("Wallpaper upload error:", error);
+
+        // Clean up files if the database save failed.
+        // Files are intentionally left in place for other upload errors
+        // so they can be inspected and recovered.
+        if (error.message && error.message.startsWith("Database save failed:")) {
+            if (originalPath) {
+                await supabaseClient.storage.from("wallpaper-files").remove([originalPath]);
+            }
+            if (previewPath) {
+                await supabaseClient.storage.from("wallpaper-previews").remove([previewPath]);
+            }
+        }
+    }
+});
+ 
+
+    </script>
+
+<div id="upi-payment-box" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#171022; color:white; padding:25px; border-radius:18px; text-align:center; max-width:360px; width:100%; border:1px solid #a855f7;">
+        <h2 style="color:#c084fc;">Pay with UPI</h2>
+        <p>Scan this QR code to pay</p>
+        <img src="upi-qr.png" alt="UPI Payment QR Code" style="width:220px; max-width:100%; background:white; padding:8px; border-radius:10px;">
+        <p>Amount: <strong id="upi-amount">₹10.00</strong></p>
+        <p>UPI ID: 9080013967@ptyes</p>
+        <p style="font-size:13px;color:#c4b5fd;">After paying, wait for payment verification before downloading.</p>
+        <button type="button" onclick="document.getElementById('upi-payment-box').style.display='none'" style="padding:10px 20px;border:0;border-radius:8px;background:#a855f7;color:white;cursor:pointer;">Close</button>
+    </div>
+</div>
+
+</body>
+</html>
