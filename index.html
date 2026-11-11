@@ -99,6 +99,15 @@ footer p{font-size:13px;margin-top:18px}
         </form>
 
         <p id="upload-message" role="status"></p>
+
+        <div style="margin-top:28px">
+            <h3 style="color:#c084fc">Manage Wallpapers</h3>
+            <p style="color:#b9adc9;margin-top:8px">View and delete wallpapers from your store.</p>
+            <div id="admin-wallpaper-list" class="admin-wallpaper-list">
+                <p>Login to load wallpapers.</p>
+            </div>
+            <p id="manage-message" role="status" style="margin-top:12px;overflow-wrap:anywhere"></p>
+        </div>
     </div>
 </section>
 
@@ -417,6 +426,121 @@ document.getElementById("admin-link").addEventListener("click", (event) => {
     }
 });
 
+// Load all wallpapers in the admin dashboard and provide delete controls.
+async function refreshAdminWallpapers() {
+    const list = document.getElementById("admin-wallpaper-list");
+    const message = document.getElementById("manage-message");
+
+    list.innerHTML = "<p>Loading wallpapers...</p>";
+    message.textContent = "";
+
+    try {
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!sessionData.session) throw new Error("Please log in again.");
+
+        const { data, error } = await supabaseClient
+            .from("wallpapers")
+            .select("id, title, storage_path, preview_url, is_published")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        list.innerHTML = "";
+        if (!data || data.length === 0) {
+            list.innerHTML = "<p>No wallpapers found.</p>";
+            return;
+        }
+
+        data.forEach((wallpaper) => {
+            const item = document.createElement("div");
+            item.className = "admin-wallpaper-item";
+
+            const title = document.createElement("span");
+            title.textContent = wallpaper.title || "Untitled wallpaper";
+
+            const status = document.createElement("small");
+            status.textContent = wallpaper.is_published ? "Published" : "Draft";
+            status.style.color = wallpaper.is_published ? "#86efac" : "#fcd34d";
+            status.style.marginLeft = "8px";
+            title.appendChild(status);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "delete-wallpaper";
+            deleteButton.textContent = "Delete";
+            deleteButton.addEventListener("click", async () => {
+                const confirmed = window.confirm(
+                    `Delete “${wallpaper.title || "this wallpaper"}”? This cannot be undone.`
+                );
+                if (!confirmed) return;
+
+                deleteButton.disabled = true;
+                deleteButton.textContent = "Deleting...";
+                message.textContent = "Deleting wallpaper...";
+
+                try {
+                    const { data: currentSession, error: currentSessionError } =
+                        await supabaseClient.auth.getSession();
+                    if (currentSessionError) throw currentSessionError;
+                    if (!currentSession.session) throw new Error("Your session expired. Please log in again.");
+
+                    // Remove private original file.
+                    if (wallpaper.storage_path) {
+                        const { error: originalRemoveError } = await supabaseClient.storage
+                            .from("wallpaper-files")
+                            .remove([wallpaper.storage_path]);
+                        if (originalRemoveError) throw originalRemoveError;
+                    }
+
+                    // Derive the preview object path from its public URL.
+                    if (wallpaper.preview_url) {
+                        const previewUrl = new URL(wallpaper.preview_url);
+                        const marker = "/storage/v1/object/public/wallpaper-previews/";
+                        const markerIndex = previewUrl.pathname.indexOf(marker);
+                        if (markerIndex !== -1) {
+                            const previewPath = decodeURIComponent(
+                                previewUrl.pathname.slice(markerIndex + marker.length)
+                            );
+                            if (previewPath) {
+                                const { error: previewRemoveError } = await supabaseClient.storage
+                                    .from("wallpaper-previews")
+                                    .remove([previewPath]);
+                                if (previewRemoveError) throw previewRemoveError;
+                            }
+                        }
+                    }
+
+                    const { error: deleteRowError } = await supabaseClient
+                        .from("wallpapers")
+                        .delete()
+                        .eq("id", wallpaper.id);
+                    if (deleteRowError) throw deleteRowError;
+
+                    message.textContent = "Wallpaper deleted successfully.";
+                    await refreshAdminWallpapers();
+                    await loadWallpapers();
+                } catch (deleteError) {
+                    console.error("Wallpaper delete error:", deleteError);
+                    message.textContent = "Delete failed: " + deleteError.message +
+                        ". Check Supabase DELETE policies for wallpapers and both storage buckets.";
+                    deleteButton.disabled = false;
+                    deleteButton.textContent = "Delete";
+                }
+            });
+
+            item.append(title, deleteButton);
+            list.appendChild(item);
+        });
+    } catch (error) {
+        console.error("Admin wallpaper list error:", error);
+        list.innerHTML = "<p>Could not load wallpapers.</p>";
+        message.textContent = "Manage error: " + error.message +
+            ". Check the Supabase SELECT policy for the admin account.";
+    }
+}
+
 document.getElementById("admin-login-form")
 .addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -592,6 +716,7 @@ document.getElementById("upload-form")
         databaseSaved = true;
 
         await loadWallpapers();
+        await refreshAdminWallpapers();
 
         message.textContent = "Wallpaper published successfully!";
 
