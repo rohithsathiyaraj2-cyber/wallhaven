@@ -15,7 +15,9 @@ body{font-family:Arial,sans-serif;background:#0b0714;color:white}
 header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;padding:22px 8%;background:#120b20;border-bottom:1px solid #332044}
 .logo{font-size:27px;font-weight:bold;color:#c084fc}
 header a,footer a{color:white;text-decoration:none}
-header nav{display:flex;gap:18px;flex-wrap:wrap}
+header nav{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+header nav a{font-family:Arial,sans-serif;font-weight:800;letter-spacing:.4px;color:#c084fc;text-shadow:0 0 10px rgba(168,85,247,.35);transition:.2s}
+header nav a:hover{color:#fff;text-shadow:0 0 14px #a855f7}
 .hero{text-align:center;padding:75px 20px 45px}
 .hero h1{font-size:clamp(32px,6vw,55px);margin-bottom:16px}
 .hero span{color:#c084fc}
@@ -33,23 +35,12 @@ header nav{display:flex;gap:18px;flex-wrap:wrap}
 .buy{display:block;width:100%;border:none;border-radius:8px;padding:12px;background:#9333ea;color:white;font-size:15px;cursor:pointer}
 .buy:hover{background:#a855f7}
 .buy:disabled{opacity:.6;cursor:wait}
-#admin{display:none;max-width:500px;margin:30px auto;padding:25px;background:#171022;border:1px solid #a855f7;border-radius:16px}
-#admin h2{color:#c084fc;margin-bottom:12px}
-#admin form{display:flex;flex-direction:column;gap:14px;margin-top:20px}
-#admin input,#admin textarea{width:100%;padding:12px;border:1px solid #49305f;border-radius:8px;background:#0d0914;color:white}
-#admin textarea{min-height:90px;resize:vertical}
-.admin-wallpaper-list{display:grid;gap:10px;margin-top:16px}
-.admin-wallpaper-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#0d0914;border:1px solid #49305f;border-radius:10px}
-.admin-wallpaper-item span{overflow-wrap:anywhere}
-.delete-wallpaper{border:1px solid #ef4444;background:#7f1d1d;color:#fff;padding:9px 12px;border-radius:8px;cursor:pointer;flex-shrink:0}
-.delete-wallpaper:disabled{opacity:.6;cursor:wait}
-#admin-message,#upload-message{margin-top:12px;overflow-wrap:anywhere}
 footer{text-align:center;padding:25px 15px;color:#e9d5ff;background:#171022;border-top:1px solid #a855f7;margin-top:40px}
 footer h3{color:#c084fc;margin-bottom:15px}
 footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}
 footer p{font-size:13px;margin-top:18px}
 @media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){header{padding:18px 5%}.gallery{padding-left:5%;padding-right:5%}#admin{margin:25px 5%}.cards{grid-template-columns:1fr}}
+@media(max-width:600px){header{padding:18px 5%}.gallery{padding-left:5%;padding-right:5%}header nav{gap:14px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -58,7 +49,7 @@ footer p{font-size:13px;margin-top:18px}
     <div class="logo">WallHaven.</div>
     <nav>
         <a href="#gallery">Explore Wallpapers</a>
-        <a href="#admin" id="admin-link">Admin Login</a>
+        <a class="nav-link" href="admin.html">Admin Login</a>
     </nav>
 </header>
 
@@ -72,45 +63,6 @@ footer p{font-size:13px;margin-top:18px}
     <h2>Explore Wallpapers</h2>
     <div class="cards" id="cards"><p>Loading wallpapers...</p></div>
 </section>
-
-<section id="admin">
-    <h2>Admin Login</h2>
-    <p>Login to manage your wallpapers.</p>
-
-    <form id="admin-login-form">
-        <input type="email" id="admin-email" placeholder="Admin email" required>
-        <input type="password" id="admin-password" placeholder="Password" required>
-        <button type="submit" class="buy">Login</button>
-    </form>
-
-    <p id="admin-message" role="status"></p>
-
-    <div id="admin-dashboard" style="display:none;margin-top:25px">
-        <h2>Wallpaper Dashboard</h2>
-        <p>Upload a new premium wallpaper.</p>
-
-        <form id="upload-form">
-            <input type="text" id="wallpaper-title" placeholder="Wallpaper title" required>
-            <textarea id="wallpaper-description" placeholder="Wallpaper description"></textarea>
-            <input type="text" id="wallpaper-category" placeholder="Category (Anime, Gaming...)" required>
-            <input type="number" id="wallpaper-price" placeholder="Price in ₹" min="1" step="0.01" required>
-            <input type="file" id="wallpaper-file" accept="image/*" required>
-            <button type="submit" class="buy">Upload Wallpaper</button>
-        </form>
-
-        <p id="upload-message" role="status"></p>
-
-        <div style="margin-top:28px">
-            <h3 style="color:#c084fc">Manage Wallpapers</h3>
-            <p style="color:#b9adc9;margin-top:8px">View and delete wallpapers from your store.</p>
-            <div id="admin-wallpaper-list" class="admin-wallpaper-list">
-                <p>Login to load wallpapers.</p>
-            </div>
-            <p id="manage-message" role="status" style="margin-top:12px;overflow-wrap:anywhere"></p>
-        </div>
-    </div>
-</section>
-
 <footer>
     <h3>WallHaven</h3>
     <nav>
@@ -412,350 +364,6 @@ function applySearch() {
 }
 
 document.getElementById("search").addEventListener("input", applySearch);
-
-document.getElementById("admin-link").addEventListener("click", (event) => {
-    event.preventDefault();
-
-    const section = document.getElementById("admin");
-    const hidden = getComputedStyle(section).display === "none";
-
-    section.style.display = hidden ? "block" : "none";
-
-    if (hidden) {
-        section.scrollIntoView({behavior: "smooth"});
-    }
-});
-
-// Load all wallpapers in the admin dashboard and provide delete controls.
-async function refreshAdminWallpapers() {
-    const list = document.getElementById("admin-wallpaper-list");
-    const message = document.getElementById("manage-message");
-
-    list.innerHTML = "<p>Loading wallpapers...</p>";
-    message.textContent = "";
-
-    try {
-        const { data: sessionData, error: sessionError } =
-            await supabaseClient.auth.getSession();
-        if (sessionError) throw sessionError;
-        if (!sessionData.session) throw new Error("Please log in again.");
-
-        const { data, error } = await supabaseClient
-            .from("wallpapers")
-            .select("id, title, storage_path, preview_url, is_published")
-            .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        list.innerHTML = "";
-        if (!data || data.length === 0) {
-            list.innerHTML = "<p>No wallpapers found.</p>";
-            return;
-        }
-
-        data.forEach((wallpaper) => {
-            const item = document.createElement("div");
-            item.className = "admin-wallpaper-item";
-
-            const title = document.createElement("span");
-            title.textContent = wallpaper.title || "Untitled wallpaper";
-
-            const status = document.createElement("small");
-            status.textContent = wallpaper.is_published ? "Published" : "Draft";
-            status.style.color = wallpaper.is_published ? "#86efac" : "#fcd34d";
-            status.style.marginLeft = "8px";
-            title.appendChild(status);
-
-            const deleteButton = document.createElement("button");
-            deleteButton.type = "button";
-            deleteButton.className = "delete-wallpaper";
-            deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", async () => {
-                const confirmed = window.confirm(
-                    `Delete “${wallpaper.title || "this wallpaper"}”? This cannot be undone.`
-                );
-                if (!confirmed) return;
-
-                deleteButton.disabled = true;
-                deleteButton.textContent = "Deleting...";
-                message.textContent = "Deleting wallpaper...";
-
-                try {
-                    const { data: currentSession, error: currentSessionError } =
-                        await supabaseClient.auth.getSession();
-                    if (currentSessionError) throw currentSessionError;
-                    if (!currentSession.session) throw new Error("Your session expired. Please log in again.");
-
-                    // Remove private original file.
-                    if (wallpaper.storage_path) {
-                        const { error: originalRemoveError } = await supabaseClient.storage
-                            .from("wallpaper-files")
-                            .remove([wallpaper.storage_path]);
-                        if (originalRemoveError) throw originalRemoveError;
-                    }
-
-                    // Derive the preview object path from its public URL.
-                    if (wallpaper.preview_url) {
-                        const previewUrl = new URL(wallpaper.preview_url);
-                        const marker = "/storage/v1/object/public/wallpaper-previews/";
-                        const markerIndex = previewUrl.pathname.indexOf(marker);
-                        if (markerIndex !== -1) {
-                            const previewPath = decodeURIComponent(
-                                previewUrl.pathname.slice(markerIndex + marker.length)
-                            );
-                            if (previewPath) {
-                                const { error: previewRemoveError } = await supabaseClient.storage
-                                    .from("wallpaper-previews")
-                                    .remove([previewPath]);
-                                if (previewRemoveError) throw previewRemoveError;
-                            }
-                        }
-                    }
-
-                    const { error: deleteRowError } = await supabaseClient
-                        .from("wallpapers")
-                        .delete()
-                        .eq("id", wallpaper.id);
-                    if (deleteRowError) throw deleteRowError;
-
-                    message.textContent = "Wallpaper deleted successfully.";
-                    await refreshAdminWallpapers();
-                    await loadWallpapers();
-                } catch (deleteError) {
-                    console.error("Wallpaper delete error:", deleteError);
-                    message.textContent = "Delete failed: " + deleteError.message +
-                        ". Check Supabase DELETE policies for wallpapers and both storage buckets.";
-                    deleteButton.disabled = false;
-                    deleteButton.textContent = "Delete";
-                }
-            });
-
-            item.append(title, deleteButton);
-            list.appendChild(item);
-        });
-    } catch (error) {
-        console.error("Admin wallpaper list error:", error);
-        list.innerHTML = "<p>Could not load wallpapers.</p>";
-        message.textContent = "Manage error: " + error.message +
-            ". Check the Supabase SELECT policy for the admin account.";
-    }
-}
-
-document.getElementById("admin-login-form")
-.addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const message = document.getElementById("admin-message");
-    const submitButton = this.querySelector('button[type="submit"]');
-
-    message.textContent = "Logging in...";
-    submitButton.disabled = true;
-
-    try {
-        const {data, error} = await supabaseClient.auth.signInWithPassword({
-            email: document.getElementById("admin-email").value.trim(),
-            password: document.getElementById("admin-password").value
-        });
-
-        if (error) throw error;
-
-        if (!data.session) {
-            throw new Error("No login session was created.");
-        }
-
-        message.textContent = "Login successful.";
-
-        document.getElementById("admin-dashboard").style.display = "block";
-        await refreshAdminWallpapers();
-
-    } catch (error) {
-        console.error("Admin login error:", error);
-        message.textContent = "Login failed: " + error.message;
-
-    } finally {
-        submitButton.disabled = false;
-    }
-});
-
-document.getElementById("upload-form")
-.addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const form = this;
-    const message = document.getElementById("upload-message");
-    const submitButton = form.querySelector('button[type="submit"]');
-
-    const title = document.getElementById("wallpaper-title").value.trim();
-    const description = document.getElementById("wallpaper-description").value.trim();
-    const category = document.getElementById("wallpaper-category").value.trim();
-    const price = Number(document.getElementById("wallpaper-price").value);
-    const file = document.getElementById("wallpaper-file").files[0];
-
-    if (!file || !title || !category || !Number.isFinite(price) || price <= 0) {
-        message.textContent = "Please complete all required fields.";
-        return;
-    }
-
-    if (!file.type.startsWith("image/") || file.size > 15 * 1024 * 1024) {
-        message.textContent = "Choose an image smaller than 15 MB.";
-        return;
-    }
-
-    const {data: sessionData, error: sessionError} =
-        await supabaseClient.auth.getSession();
-
-    if (sessionError || !sessionData.session) {
-        message.textContent = "Please log in before uploading.";
-        return;
-    }
-
-    let originalPath = null;
-    let previewPath = null;
-    let originalUploaded = false;
-    let previewUploaded = false;
-    let objectUrl = null;
-    let databaseSaved = false;
-
-    submitButton.disabled = true;
-
-    try {
-        message.textContent = "Preparing preview...";
-
-        const image = new Image();
-        objectUrl = URL.createObjectURL(file);
-
-        await new Promise((resolve, reject) => {
-            image.onload = resolve;
-            image.onerror = () => reject(new Error("Could not read image."));
-            image.src = objectUrl;
-        });
-
-        const maxDimension = 1200;
-
-        const scale = Math.min(
-            1,
-            maxDimension / Math.max(image.naturalWidth, image.naturalHeight)
-        );
-
-        const canvas = document.createElement("canvas");
-
-        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
-        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
-
-        const context = canvas.getContext("2d");
-
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-        const previewBlob = await new Promise((resolve, reject) => {
-            canvas.toBlob(
-                blob => blob
-                    ? resolve(blob)
-                    : reject(new Error("Could not create preview.")),
-                "image/jpeg",
-                0.7
-            );
-        });
-
-        const id = crypto.randomUUID();
-
-        const extension = (file.name.split(".").pop() || "").toLowerCase();
-
-        const safeExtension = /^[a-z0-9]{1,10}$/.test(extension)
-            ? extension
-            : "bin";
-
-        originalPath = `${id}.${safeExtension}`;
-        previewPath = `${id}.jpg`;
-
-        message.textContent = "Uploading original image...";
-
-        const {error: originalError} = await supabaseClient.storage
-            .from("wallpaper-files")
-            .upload(originalPath, file, {
-                contentType: file.type,
-                upsert: false
-            });
-
-        if (originalError) throw originalError;
-
-        originalUploaded = true;
-
-        message.textContent = "Uploading preview...";
-
-        const {error: previewError} = await supabaseClient.storage
-            .from("wallpaper-previews")
-            .upload(previewPath, previewBlob, {
-                contentType: "image/jpeg",
-                upsert: false
-            });
-
-        if (previewError) throw previewError;
-
-        previewUploaded = true;
-
-        const {data: previewData} = supabaseClient.storage
-            .from("wallpaper-previews")
-            .getPublicUrl(previewPath);
-
-        message.textContent = "Saving wallpaper details...";
-
-        const {error: insertError} = await supabaseClient
-            .from("wallpapers")
-            .insert({
-                title,
-                description,
-                category,
-                price_paise: Math.round(price * 100),
-                storage_path: originalPath,
-                preview_url: previewData.publicUrl,
-                is_published: true
-            });
-
-        if (insertError) throw insertError;
-
-        databaseSaved = true;
-
-        await loadWallpapers();
-        await refreshAdminWallpapers();
-
-        message.textContent = "Wallpaper published successfully!";
-
-        form.reset();
-
-    } catch (error) {
-        console.error("Wallpaper upload error:", error);
-
-        message.textContent = "Upload failed: " + error.message;
-
-        if (!databaseSaved && originalUploaded && originalPath) {
-            const {error: cleanupError} = await supabaseClient.storage
-                .from("wallpaper-files")
-                .remove([originalPath]);
-
-            if (cleanupError) {
-                console.error("Original cleanup failed:", cleanupError);
-            }
-        }
-
-        if (!databaseSaved && previewUploaded && previewPath) {
-            const {error: cleanupError} = await supabaseClient.storage
-                .from("wallpaper-previews")
-                .remove([previewPath]);
-
-            if (cleanupError) {
-                console.error("Preview cleanup failed:", cleanupError);
-            }
-        }
-
-    } finally {
-        if (objectUrl) {
-            URL.revokeObjectURL(objectUrl);
-        }
-
-        submitButton.disabled = false;
-    }
-});
-
 loadWallpapers();
 </script>
 </body>

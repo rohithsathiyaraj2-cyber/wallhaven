@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WallHaven | Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#0b0714;color:white}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;padding:22px 8%;background:#120b20;border-bottom:1px solid #332044}
+.logo{font-size:27px;font-weight:bold;color:#c084fc}
+header a,footer a{color:white;text-decoration:none}
+header nav{display:flex;gap:18px;flex-wrap:wrap}
+.hero{text-align:center;padding:75px 20px 45px}
+.hero h1{font-size:clamp(32px,6vw,55px);margin-bottom:16px}
+.hero span{color:#c084fc}
+.hero p{color:#b9adc9;line-height:1.7}
+.search{margin-top:25px;padding:14px;width:min(90%,420px);border:1px solid #65428b;border-radius:10px;background:#1a1028;color:white;font-size:16px}
+.gallery{padding:25px 8% 70px}
+.gallery h2{margin-bottom:25px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.card{background:#171022;border:1px solid #30203f;border-radius:15px;overflow:hidden;transition:transform .2s}
+.card:hover{transform:translateY(-5px);border-color:#a855f7}
+.preview{height:230px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#38145c,#111827,#7028a8);color:#ead5ff;font-size:24px;font-weight:bold}
+.preview img{width:100%;height:100%;object-fit:cover}
+.details{padding:18px}
+.details p{color:#b9adc9;margin:10px 0 16px;font-size:14px;line-height:1.5}
+.buy{display:block;width:100%;border:none;border-radius:8px;padding:12px;background:#9333ea;color:white;font-size:15px;cursor:pointer}
+.buy:hover{background:#a855f7}
+.buy:disabled{opacity:.6;cursor:wait}
+#admin{display:none;max-width:500px;margin:30px auto;padding:25px;background:#171022;border:1px solid #a855f7;border-radius:16px}
+#admin h2{color:#c084fc;margin-bottom:12px}
+#admin form{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+#admin input,#admin textarea{width:100%;padding:12px;border:1px solid #49305f;border-radius:8px;background:#0d0914;color:white}
+#admin textarea{min-height:90px;resize:vertical}
+.admin-wallpaper-list{display:grid;gap:10px;margin-top:16px}
+.admin-wallpaper-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#0d0914;border:1px solid #49305f;border-radius:10px}
+.admin-wallpaper-item span{overflow-wrap:anywhere}
+.delete-wallpaper{border:1px solid #ef4444;background:#7f1d1d;color:#fff;padding:9px 12px;border-radius:8px;cursor:pointer;flex-shrink:0}
+.delete-wallpaper:disabled{opacity:.6;cursor:wait}
+#admin-message,#upload-message{margin-top:12px;overflow-wrap:anywhere}
+footer{text-align:center;padding:25px 15px;color:#e9d5ff;background:#171022;border-top:1px solid #a855f7;margin-top:40px}
+footer h3{color:#c084fc;margin-bottom:15px}
+footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}
+footer p{font-size:13px;margin-top:18px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){header{padding:18px 5%}.gallery{padding-left:5%;padding-right:5%}#admin{margin:25px 5%}.cards{grid-template-columns:1fr}}
+
+.admin-page{max-width:900px;margin:42px auto;padding:0 20px 60px}
+.admin-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.admin-top a{color:#c084fc;text-decoration:none;font-weight:800}
+.panel{background:#171022;border:1px solid #7040a0;border-radius:18px;padding:24px;margin:20px 0;box-shadow:0 0 25px rgba(147,51,234,.10)}
+.panel h2,.panel h3{color:#d8b4fe;margin-bottom:10px}
+.panel form{display:flex;flex-direction:column;gap:13px;margin-top:18px}
+.panel input,.panel textarea{width:100%;padding:12px;border:1px solid #49305f;border-radius:8px;background:#0d0914;color:white}
+.panel textarea{min-height:85px;resize:vertical}
+.admin-button{border:0;border-radius:8px;padding:12px 16px;background:#9333ea;color:white;font-weight:700;cursor:pointer}
+.admin-button:hover{background:#a855f7}
+.admin-button:disabled{opacity:.6;cursor:wait}
+.admin-wallpaper-list{display:grid;gap:12px;margin-top:16px}
+.admin-wallpaper-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;background:#0d0914;border:1px solid #49305f;border-radius:10px;flex-wrap:wrap}
+.admin-wallpaper-item span{overflow-wrap:anywhere;flex:1}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.delete-wallpaper{border:1px solid #ef4444;background:#7f1d1d;color:#fff;padding:9px 12px;border-radius:8px;cursor:pointer}
+.edit-wallpaper{border:1px solid #a855f7;background:#3b1760;color:#fff;padding:9px 12px;border-radius:8px;cursor:pointer}
+#admin-message,#upload-message,#manage-message,#edit-message{margin-top:12px;overflow-wrap:anywhere;color:#d8b4fe}
+#admin-dashboard,#edit-panel{display:none}
+@media(max-width:600px){.admin-page{margin:24px auto;padding:0 14px 40px}.panel{padding:17px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">WallHaven.</div>
+  <nav><a href="index.html">Explore Wallpapers</a></nav>
+</header>
+<main class="admin-page">
+  <div class="admin-top">
+    <div><h1 style="color:#e9d5ff">Admin Dashboard</h1><p style="color:#b9adc9;margin-top:8px">Manage your wallpaper store</p></div>
+    <a href="index.html">← Back to store</a>
+  </div>
+  <section class="panel" id="login-panel">
+    <h2>Admin Login</h2>
+    <p style="color:#b9adc9">Login to upload, edit and manage wallpapers.</p>
+    <form id="admin-login-form">
+      <input type="email" id="admin-email" placeholder="Admin email" required>
+      <input type="password" id="admin-password" placeholder="Password" required>
+      <button type="submit" class="admin-button">Login</button>
+    </form>
+    <p id="admin-message" role="status"></p>
+  </section>
+  <section id="admin-dashboard">
+    <section class="panel">
+      <h2>Upload New Wallpaper</h2>
+      <form id="upload-form">
+        <input type="text" id="wallpaper-title" placeholder="Wallpaper title" required>
+        <textarea id="wallpaper-description" placeholder="Wallpaper description"></textarea>
+        <input type="text" id="wallpaper-category" placeholder="Category (Anime, Gaming...)" required>
+        <input type="number" id="wallpaper-price" placeholder="Price in ₹" min="1" step="0.01" required>
+        <input type="file" id="wallpaper-file" accept="image/*" required>
+        <button type="submit" class="admin-button">Upload Wallpaper</button>
+      </form>
+      <p id="upload-message" role="status"></p>
+    </section>
+    <section class="panel">
+      <h2>Manage Wallpapers</h2>
+      <p style="color:#b9adc9">Edit details or remove an existing wallpaper.</p>
+      <div id="admin-wallpaper-list" class="admin-wallpaper-list"><p>Loading wallpapers...</p></div>
+      <p id="manage-message" role="status"></p>
+    </section>
+    <section class="panel" id="edit-panel">
+      <h2>Edit Wallpaper</h2>
+      <form id="edit-form">
+        <input type="hidden" id="edit-wallpaper-id">
+        <input type="text" id="edit-title" placeholder="Wallpaper title" required>
+        <textarea id="edit-description" placeholder="Wallpaper description"></textarea>
+        <input type="text" id="edit-category" placeholder="Category" required>
+        <input type="number" id="edit-price" placeholder="Price in ₹" min="1" step="0.01" required>
+        <label style="color:#b9adc9">Replace image (optional)</label>
+        <input type="file" id="edit-file" accept="image/*">
+        <button type="submit" class="admin-button">Save Changes</button>
+        <button type="button" class="edit-wallpaper" id="cancel-edit">Cancel</button>
+      </form>
+      <p id="edit-message" role="status"></p>
+    </section>
+  </section>
+</main>
+<script>
+"use strict";
+const SUPABASE_URL = "https://vxtryneiljxvrnakubdd.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_p1qEiO-agXUY6iyxH8OJnQ_rU0gg7Yp";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const byId = id => document.getElementById(id);
+
+async function refreshAdminWallpapers() {
+  const list = byId("admin-wallpaper-list");
+  const message = byId("manage-message");
+  list.innerHTML = "<p>Loading wallpapers...</p>";
+  message.textContent = "";
+  try {
+    const {data: sessionData, error: sessionError} = await supabaseClient.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!sessionData.session) throw new Error("Please log in again.");
+    const {data, error} = await supabaseClient.from("wallpapers")
+      .select("id,title,description,category,price_paise,storage_path,preview_url,is_published")
+      .order("created_at", {ascending:false});
+    if (error) throw error;
+    list.innerHTML = "";
+    if (!data || !data.length) { list.innerHTML = "<p>No wallpapers found.</p>"; return; }
+    data.forEach(wallpaper => {
+      const item = document.createElement("div");
+      item.className = "admin-wallpaper-item";
+      const label = document.createElement("span");
+      label.textContent = (wallpaper.title || "Untitled wallpaper") + (wallpaper.is_published ? " — Published" : " — Draft");
+      const actions = document.createElement("div");
+      actions.className = "admin-actions";
+      const edit = document.createElement("button");
+      edit.type = "button"; edit.className = "edit-wallpaper"; edit.textContent = "Edit";
+      edit.addEventListener("click", () => {
+        byId("edit-wallpaper-id").value = wallpaper.id;
+        byId("edit-title").value = wallpaper.title || "";
+        byId("edit-description").value = wallpaper.description || "";
+        byId("edit-category").value = wallpaper.category || "";
+        byId("edit-price").value = ((Number(wallpaper.price_paise) || 0) / 100).toFixed(2);
+        byId("edit-file").value = "";
+        byId("edit-message").textContent = "";
+        byId("edit-panel").style.display = "block";
+        byId("edit-panel").scrollIntoView({behavior:"smooth",block:"start"});
+      });
+      const del = document.createElement("button");
+      del.type = "button"; del.className = "delete-wallpaper"; del.textContent = "Delete";
+      del.addEventListener("click", async () => {
+        if (!confirm("Delete this wallpaper? This cannot be undone.")) return;
+        del.disabled = true; del.textContent = "Deleting...";
+        try {
+          if (wallpaper.storage_path) {
+            const {error} = await supabaseClient.storage.from("wallpaper-files").remove([wallpaper.storage_path]);
+            if (error) throw error;
+          }
+          if (wallpaper.preview_url) {
+            const u = new URL(wallpaper.preview_url);
+            const marker = "/storage/v1/object/public/wallpaper-previews/";
+            const idx = u.pathname.indexOf(marker);
+            if (idx >= 0) {
+              const path = decodeURIComponent(u.pathname.slice(idx + marker.length));
+              if (path) {
+                const {error} = await supabaseClient.storage.from("wallpaper-previews").remove([path]);
+                if (error) throw error;
+              }
+            }
+          }
+          const {error} = await supabaseClient.from("wallpapers").delete().eq("id", wallpaper.id);
+          if (error) throw error;
+          message.textContent = "Wallpaper deleted.";
+          await refreshAdminWallpapers();
+        } catch (err) {
+          console.error(err); message.textContent = "Delete failed: " + err.message;
+          del.disabled = false; del.textContent = "Delete";
+        }
+      });
+      actions.append(edit,del); item.append(label,actions); list.append(item);
+    });
+  } catch (err) {
+    console.error(err); list.innerHTML = "<p>Could not load wallpapers.</p>";
+    message.textContent = "Manage error: " + err.message;
+  }
+}
+
+byId("admin-login-form").addEventListener("submit", async function(event) {
+  event.preventDefault();
+  const msg = byId("admin-message"), button = this.querySelector('button[type="submit"]');
+  msg.textContent = "Logging in..."; button.disabled = true;
+  try {
+    const {data,error} = await supabaseClient.auth.signInWithPassword({
+      email:byId("admin-email").value.trim(), password:byId("admin-password").value
+    });
+    if (error) throw error;
+    if (!data.session) throw new Error("No login session was created.");
+    msg.textContent = "Login successful.";
+    byId("login-panel").style.display = "none";
+    byId("admin-dashboard").style.display = "block";
+    await refreshAdminWallpapers();
+  } catch(err) { console.error(err); msg.textContent = "Login failed: " + err.message; }
+  finally { button.disabled = false; }
+});
+
+byId("upload-form").addEventListener("submit", async function(event) {
+  event.preventDefault();
+  const form = this, msg = byId("upload-message"), button = form.querySelector('button[type="submit"]');
+  const title=byId("wallpaper-title").value.trim(), description=byId("wallpaper-description").value.trim();
+  const category=byId("wallpaper-category").value.trim(), price=Number(byId("wallpaper-price").value);
+  const file=byId("wallpaper-file").files[0];
+  if (!file || !title || !category || !Number.isFinite(price) || price<=0) { msg.textContent="Complete all required fields."; return; }
+  if (!file.type.startsWith("image/") || file.size>15*1024*1024) { msg.textContent="Choose an image smaller than 15 MB."; return; }
+  const {data:sd,error:se}=await supabaseClient.auth.getSession();
+  if (se || !sd.session) { msg.textContent="Please log in before uploading."; return; }
+  let originalPath=null, previewPath=null, originalUploaded=false, previewUploaded=false, saved=false, objectUrl=null;
+  button.disabled=true;
+  try {
+    msg.textContent="Preparing preview...";
+    const image=new Image(); objectUrl=URL.createObjectURL(file);
+    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error("Could not read image."));image.src=objectUrl;});
+    const scale=Math.min(1,1200/Math.max(image.naturalWidth,image.naturalHeight));
+    const canvas=document.createElement("canvas");
+    canvas.width=Math.max(1,Math.round(image.naturalWidth*scale)); canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+    canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);
+    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Could not create preview.")),"image/jpeg",0.7));
+    const id=crypto.randomUUID(), ext=(file.name.split(".").pop()||"").toLowerCase();
+    originalPath=id+"."+(/^[a-z0-9]{1,10}$/.test(ext)?ext:"bin"); previewPath=id+".jpg";
+    msg.textContent="Uploading original...";
+    let result=await supabaseClient.storage.from("wallpaper-files").upload(originalPath,file,{contentType:file.type,upsert:false});
+    if(result.error) throw result.error; originalUploaded=true;
+    msg.textContent="Uploading preview...";
+    result=await supabaseClient.storage.from("wallpaper-previews").upload(previewPath,blob,{contentType:"image/jpeg",upsert:false});
+    if(result.error) throw result.error; previewUploaded=true;
+    const {data:pd}=supabaseClient.storage.from("wallpaper-previews").getPublicUrl(previewPath);
+    msg.textContent="Saving wallpaper...";
+    result=await supabaseClient.from("wallpapers").insert({title,description,category,price_paise:Math.round(price*100),storage_path:originalPath,preview_url:pd.publicUrl,is_published:true});
+    if(result.error) throw result.error; saved=true;
+    form.reset(); msg.textContent="Wallpaper published successfully."; await refreshAdminWallpapers();
+  } catch(err) {
+    console.error(err); msg.textContent="Upload failed: "+err.message;
+    if(!saved && originalUploaded) await supabaseClient.storage.from("wallpaper-files").remove([originalPath]);
+    if(!saved && previewUploaded) await supabaseClient.storage.from("wallpaper-previews").remove([previewPath]);
+  } finally { if(objectUrl) URL.revokeObjectURL(objectUrl); button.disabled=false; }
+});
+
+byId("edit-form").addEventListener("submit", async function(event) {
+  event.preventDefault();
+  const button=this.querySelector('button[type="submit"]'), msg=byId("edit-message");
+  const id=byId("edit-wallpaper-id").value, title=byId("edit-title").value.trim();
+  const description=byId("edit-description").value.trim(), category=byId("edit-category").value.trim();
+  const price=Number(byId("edit-price").value), file=byId("edit-file").files[0];
+  if(!id || !title || !category || !Number.isFinite(price) || price<=0) {msg.textContent="Check the required fields.";return;}
+  button.disabled=true; msg.textContent="Saving changes...";
+  let newOriginal=null,newPreview=null, originalUploaded=false,previewUploaded=false,objectUrl=null;
+  try {
+    const patch={title,description,category,price_paise:Math.round(price*100)};
+    if(file) {
+      if(!file.type.startsWith("image/") || file.size>15*1024*1024) throw new Error("Choose an image smaller than 15 MB.");
+      const {data:rows,error:fetchError}=await supabaseClient.from("wallpapers")
+        .select("storage_path,preview_url").eq("id",id).single();
+      if(fetchError) throw fetchError;
+      const image=new Image(); objectUrl=URL.createObjectURL(file);
+      await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error("Could not read replacement image."));image.src=objectUrl;});
+      const scale=Math.min(1,1200/Math.max(image.naturalWidth,image.naturalHeight));
+      const canvas=document.createElement("canvas"); canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);
+      const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Could not create preview.")),"image/jpeg",0.7));
+      const newId=crypto.randomUUID(),ext=(file.name.split(".").pop()||"").toLowerCase();
+      newOriginal=newId+"."+(/^[a-z0-9]{1,10}$/.test(ext)?ext:"bin");newPreview=newId+".jpg";
+      let r=await supabaseClient.storage.from("wallpaper-files").upload(newOriginal,file,{contentType:file.type,upsert:false});
+      if(r.error) throw r.error;originalUploaded=true;
+      r=await supabaseClient.storage.from("wallpaper-previews").upload(newPreview,blob,{contentType:"image/jpeg",upsert:false});
+      if(r.error) throw r.error;previewUploaded=true;
+      const {data:publicData}=supabaseClient.storage.from("wallpaper-previews").getPublicUrl(newPreview);
+      patch.storage_path=newOriginal;patch.preview_url=publicData.publicUrl;
+      const {error:updateError}=await supabaseClient.from("wallpapers").update(patch).eq("id",id);
+      if(updateError) throw updateError;
+      if(rows.storage_path) await supabaseClient.storage.from("wallpaper-files").remove([rows.storage_path]);
+      if(rows.preview_url) {
+        const u=new URL(rows.preview_url), marker="/storage/v1/object/public/wallpaper-previews/", ix=u.pathname.indexOf(marker);
+        if(ix>=0) {const p=decodeURIComponent(u.pathname.slice(ix+marker.length));if(p) await supabaseClient.storage.from("wallpaper-previews").remove([p]);}
+      }
+    } else {
+      const {error}=await supabaseClient.from("wallpapers").update(patch).eq("id",id);
+      if(error) throw error;
+    }
+    msg.textContent="Wallpaper updated successfully."; byId("edit-panel").style.display="none";
+    this.reset(); await refreshAdminWallpapers();
+  } catch(err) {
+    console.error(err); msg.textContent="Update failed: "+err.message;
+    if(originalUploaded && newOriginal) await supabaseClient.storage.from("wallpaper-files").remove([newOriginal]);
+    if(previewUploaded && newPreview) await supabaseClient.storage.from("wallpaper-previews").remove([newPreview]);
+  } finally {if(objectUrl) URL.revokeObjectURL(objectUrl);button.disabled=false;}
+});
+byId("cancel-edit").addEventListener("click",()=>{byId("edit-panel").style.display="none";byId("edit-form").reset();});
+</script>
+</body>
+</html>
