@@ -54,7 +54,20 @@ const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
-
+// Read-only Razorpay authentication check
+razorpay.orders.all({ count: 1 })
+    .then(() => {
+        console.log("RAZORPAY AUTH CHECK: SUCCESS");
+    })
+    .catch((error) => {
+        console.error(
+            "RAZORPAY AUTH CHECK: FAILED",
+            error?.error?.description ||
+            error?.description ||
+            error?.message ||
+            "Unknown error"
+        );
+    });
 // Health check
 app.get("/api/health", (req, res) => {
     res.json({
