@@ -16,13 +16,25 @@ header{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 .logo{font-size:27px;font-weight:bold;color:#c084fc}
 header a,footer a{color:white;text-decoration:none}
 header nav{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
-header nav a{font-family:Arial,sans-serif;font-weight:800;letter-spacing:.4px;color:#c084fc;text-shadow:0 0 10px rgba(168,85,247,.35);transition:.2s}
+header nav a{font-weight:800;letter-spacing:.4px;color:#c084fc;text-shadow:0 0 10px rgba(168,85,247,.35);transition:.2s}
 header nav a:hover{color:#fff;text-shadow:0 0 14px #a855f7}
-.hero{text-align:center;padding:75px 20px 45px}
+
+.hero{text-align:center;padding:75px 20px 35px}
 .hero h1{font-size:clamp(32px,6vw,55px);margin-bottom:16px}
 .hero span{color:#c084fc}
 .hero p{color:#b9adc9;line-height:1.7}
-.search{margin-top:25px;padding:14px;width:min(90%,420px);border:1px solid #65428b;border-radius:10px;background:#1a1028;color:white;font-size:16px}
+.search{margin-top:25px;padding:14px;width:min(90%,420px);border:1px solid #65428b;border-radius:10px;background:#1a1028;color:white;font-size:16px;outline:none}
+.search:focus{border-color:#c084fc;box-shadow:0 0 12px #9333ea55}
+
+.categories{padding:25px 8% 35px}
+.category-heading{text-align:center;margin-bottom:20px}
+.category-heading h2{color:#e9d5ff;font-size:25px}
+.category-heading p{color:#a99ab9;margin-top:8px;font-size:13px}
+.category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.category-btn{padding:17px 10px;border:1px solid #58327b;border-radius:12px;background:linear-gradient(135deg,#21102f,#160d24);color:#d8b4fe;font-size:14px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.25s;text-transform:capitalize;overflow-wrap:anywhere}
+.category-btn:hover{transform:translateY(-3px);border-color:#c084fc;box-shadow:0 0 17px #9333ea55;color:white}
+.category-btn.active{background:linear-gradient(135deg,#9333ea,#6b21a8);border-color:#d8b4fe;color:white;box-shadow:0 0 17px #9333ea66}
+
 .gallery{padding:25px 8% 70px}
 .gallery h2{margin-bottom:25px}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
@@ -31,16 +43,30 @@ header nav a:hover{color:#fff;text-shadow:0 0 14px #a855f7}
 .preview{height:230px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#38145c,#111827,#7028a8);color:#ead5ff;font-size:24px;font-weight:bold}
 .preview img{width:100%;height:100%;object-fit:cover}
 .details{padding:18px}
+.details h3{overflow-wrap:anywhere}
 .details p{color:#b9adc9;margin:10px 0 16px;font-size:14px;line-height:1.5}
-.buy{display:block;width:100%;border:none;border-radius:8px;padding:12px;background:#9333ea;color:white;font-size:15px;cursor:pointer}
-.buy:hover{background:#a855f7}
-.buy:disabled{opacity:.6;cursor:wait}
+.buy{display:block;width:100%;border:1px solid #c084fc;border-radius:9px;padding:13px;background:linear-gradient(110deg,#7e22ce,#a855f7,#7e22ce);background-size:200% 100%;color:white;font-size:15px;font-weight:bold;cursor:pointer;transition:.3s}
+.buy:hover{background-position:100% 0;transform:translateY(-2px);box-shadow:0 0 18px #a855f788}
+.buy:disabled{opacity:.6;cursor:wait;transform:none}
+.empty-message{color:#b9adc9;text-align:center;padding:25px;grid-column:1/-1}
+
 footer{text-align:center;padding:25px 15px;color:#e9d5ff;background:#171022;border-top:1px solid #a855f7;margin-top:40px}
 footer h3{color:#c084fc;margin-bottom:15px}
 footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}
 footer p{font-size:13px;margin-top:18px}
-@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){header{padding:18px 5%}.gallery{padding-left:5%;padding-right:5%}header nav{gap:14px}.cards{grid-template-columns:1fr}}
+
+@media(max-width:900px){
+.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+header{padding:18px 5%}
+.gallery,.categories{padding-left:5%;padding-right:5%}
+header nav{gap:14px}
+.cards{grid-template-columns:1fr}
+.category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.category-btn{padding:14px 7px;font-size:12px}
+}
 </style>
 </head>
 
@@ -49,7 +75,7 @@ footer p{font-size:13px;margin-top:18px}
     <div class="logo">WallHaven.</div>
     <nav>
         <a href="#gallery">Explore Wallpapers</a>
-        <a class="nav-link" href="admin.html">Admin Login</a>
+        <a href="admin.html">Admin Login</a>
     </nav>
 </header>
 
@@ -59,10 +85,23 @@ footer p{font-size:13px;margin-top:18px}
     <input class="search" id="search" type="text" placeholder="Search wallpapers...">
 </section>
 
-<section class="gallery" id="gallery">
-    <h2>Explore Wallpapers</h2>
-    <div class="cards" id="cards"><p>Loading wallpapers...</p></div>
+<section class="categories">
+    <div class="category-heading">
+        <h2>Explore Categories</h2>
+        <p>Choose your favourite wallpaper category</p>
+    </div>
+    <div class="category-grid" id="categoryGrid">
+        <button class="category-btn active" data-category="all">All Wallpapers</button>
+    </div>
 </section>
+
+<section class="gallery" id="gallery">
+    <h2 id="galleryTitle">Explore Wallpapers</h2>
+    <div class="cards" id="cards">
+        <p>Loading wallpapers...</p>
+    </div>
+</section>
+
 <footer>
     <h3>WallHaven</h3>
     <nav>
@@ -88,6 +127,10 @@ const supabaseClient = window.supabase.createClient(
 );
 
 const cardsContainer = document.getElementById("cards");
+const categoryGrid = document.getElementById("categoryGrid");
+
+let allWallpapers = [];
+let selectedCategory = "all";
 
 async function readJson(response) {
     const data = await response.json().catch(() => ({}));
@@ -102,9 +145,139 @@ async function readJson(response) {
 function formatPrice(pricePaise) {
     const value = Number(pricePaise);
 
-    if (!Number.isFinite(value) || value <= 0) return null;
+    if (!Number.isFinite(value) || value < 0) return null;
 
     return (value / 100).toFixed(2);
+}
+
+function createCategories() {
+    const categories = [
+        ...new Set(
+            allWallpapers
+                .map(w => String(w.category || "").trim())
+                .filter(Boolean)
+        )
+    ].sort((a, b) => a.localeCompare(b));
+
+    categoryGrid.innerHTML = "";
+
+    const allButton = document.createElement("button");
+    allButton.className = "category-btn active";
+    allButton.textContent = "All Wallpapers";
+    allButton.dataset.category = "all";
+    allButton.addEventListener("click", () => selectCategory("all"));
+    categoryGrid.appendChild(allButton);
+
+    categories.forEach(category => {
+        const button = document.createElement("button");
+        button.className = "category-btn";
+        button.textContent = category;
+        button.dataset.category = category;
+        button.addEventListener("click", () => selectCategory(category));
+        categoryGrid.appendChild(button);
+    });
+}
+
+function selectCategory(category) {
+    selectedCategory = category;
+
+    document.querySelectorAll(".category-btn").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.category === category
+        );
+    });
+
+    document.getElementById("galleryTitle").textContent =
+        category === "all" ? "Explore Wallpapers" : category + " Wallpapers";
+
+    renderWallpapers();
+}
+
+function renderWallpapers() {
+    const term = document.getElementById("search").value
+        .trim()
+        .toLowerCase();
+
+    const filtered = allWallpapers.filter(wallpaper => {
+        const matchesCategory =
+            selectedCategory === "all" ||
+            String(wallpaper.category || "").toLowerCase() ===
+            selectedCategory.toLowerCase();
+
+        const matchesSearch =
+            String(wallpaper.title || "").toLowerCase().includes(term) ||
+            String(wallpaper.description || "").toLowerCase().includes(term) ||
+            String(wallpaper.category || "").toLowerCase().includes(term);
+
+        return matchesCategory && matchesSearch;
+    });
+
+    cardsContainer.innerHTML = "";
+
+    if (!filtered.length) {
+        const message = document.createElement("p");
+        message.className = "empty-message";
+        message.textContent = "No wallpapers found in this category.";
+        cardsContainer.appendChild(message);
+        return;
+    }
+
+    filtered.forEach(wallpaper => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.dataset.title = wallpaper.title || "";
+
+        const preview = document.createElement("div");
+        preview.className = "preview";
+
+        if (wallpaper.preview_url) {
+            const img = document.createElement("img");
+            img.src = wallpaper.preview_url;
+            img.alt = `${wallpaper.title || "Wallpaper"} preview`;
+            img.loading = "lazy";
+
+            img.onerror = () => {
+                img.remove();
+                preview.textContent = "Preview unavailable";
+            };
+
+            preview.appendChild(img);
+        } else {
+            preview.textContent = wallpaper.category || "WALLPAPER";
+        }
+
+        const details = document.createElement("div");
+        details.className = "details";
+
+        const title = document.createElement("h3");
+        title.textContent = wallpaper.title || "Untitled wallpaper";
+
+        const description = document.createElement("p");
+        description.textContent =
+            wallpaper.description || "Premium PC wallpaper";
+
+        const price = formatPrice(wallpaper.price_paise);
+
+        const button = document.createElement("button");
+        button.className = "buy";
+        button.dataset.wallpaperId = wallpaper.id || "";
+
+        if (price === null || !wallpaper.id) {
+            button.textContent = "Price unavailable";
+            button.disabled = true;
+        } else if (Number(wallpaper.price_paise) === 0) {
+            button.textContent = "Free Download";
+            button.addEventListener("click", freeDownload);
+        } else {
+            button.textContent = `Buy Wallpaper: ₹${price}`;
+            button.addEventListener("click", demoBuy);
+        }
+
+        details.append(title, description, button);
+        card.append(preview, details);
+        cardsContainer.appendChild(card);
+    });
 }
 
 async function loadWallpapers() {
@@ -113,74 +286,53 @@ async function loadWallpapers() {
     try {
         const response = await fetch(`${API_BASE}/api/wallpapers`);
         const result = await readJson(response);
-        const wallpapers = result.wallpapers || [];
 
-        cardsContainer.innerHTML = "";
+        allWallpapers = result.wallpapers || [];
 
-        if (!wallpapers.length) {
-            cardsContainer.innerHTML = "<p>No published wallpapers yet.</p>";
-            return;
-        }
-
-        wallpapers.forEach((wallpaper) => {
-            const card = document.createElement("article");
-            card.className = "card";
-            card.dataset.title = wallpaper.title || "";
-
-            const preview = document.createElement("div");
-            preview.className = "preview";
-
-            if (wallpaper.preview_url) {
-                const img = document.createElement("img");
-                img.src = wallpaper.preview_url;
-                img.alt = `${wallpaper.title || "Wallpaper"} preview`;
-                img.loading = "lazy";
-
-                img.onerror = () => {
-                    preview.textContent = "Preview unavailable";
-                };
-
-                preview.appendChild(img);
-            } else {
-                preview.textContent = wallpaper.category || "WALLPAPER";
-            }
-
-            const details = document.createElement("div");
-            details.className = "details";
-
-            const title = document.createElement("h3");
-            title.textContent = wallpaper.title || "Untitled wallpaper";
-
-            const description = document.createElement("p");
-            description.textContent =
-                wallpaper.description || "Premium PC wallpaper";
-
-            const price = formatPrice(wallpaper.price_paise);
-
-            const button = document.createElement("button");
-            button.className = "buy";
-
-            button.textContent = price !== null
-                ? `Buy Wallpaper: ₹${price}`
-                : "Price unavailable";
-
-            button.dataset.wallpaperId = wallpaper.id || "";
-            button.disabled = !wallpaper.id || price === null;
-
-            button.addEventListener("click", demoBuy);
-
-            details.append(title, description, button);
-            card.append(preview, details);
-            cardsContainer.appendChild(card);
-        });
-
-        applySearch();
+        createCategories();
+        renderWallpapers();
 
     } catch (error) {
         console.error("Wallpaper loading error:", error);
-
         cardsContainer.innerHTML =
-            "<p>Wallpapers could not load. Check that the backend is running.</p>";
+            "<p class='empty-message'>Wallpapers could not load. Please refresh the page.</p>";
+    }
+}
+
+async function freeDownload(event) {
+    const button = event.currentTarget;
+    const wallpaperId = button.dataset.wallpaperId;
+
+    if (!wallpaperId) {
+        alert("Wallpaper ID is missing.");
+        return;
+    }
+
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Preparing download...";
+
+    try {
+        const response = await fetch(`${API_BASE}/api/free-download`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({wallpaperId})
+        });
+
+        const result = await readJson(response);
+
+        if (!result.downloadUrl) {
+            throw new Error("Download link was not created.");
+        }
+
+        window.location.assign(result.downloadUrl);
+
+    } catch (error) {
+        console.error("Free download error:", error);
+        alert("Download error: " + error.message);
+    } finally {
+        button.disabled = false;
+        button.textContent = originalText;
     }
 }
 
@@ -201,7 +353,7 @@ async function demoBuy(event) {
     button.disabled = true;
 
     const originalText = button.textContent;
-    button.textContent = "Creating test order...";
+    button.textContent = "Creating order...";
 
     try {
         const orderResponse = await fetch(`${API_BASE}/api/create-order`, {
@@ -243,18 +395,6 @@ async function demoBuy(event) {
 
                     const verified = await readJson(verifyResponse);
 
-                    console.log("VERIFY TOKEN CHECK:", {
-                        verified: verified.verified,
-                        tokenType: typeof verified.downloadToken,
-                        tokenLength: verified.downloadToken?.length || 0
-                    });
-
-                    console.log("Payment verification result:", {
-                        verified: verified.verified,
-                        hasDownloadToken: typeof verified.downloadToken === "string",
-                        tokenLength: verified.downloadToken?.length || 0
-                    });
-
                     if (
                         verified.verified !== true ||
                         typeof verified.downloadToken !== "string" ||
@@ -265,23 +405,14 @@ async function demoBuy(event) {
 
                     button.textContent = "Preparing download...";
 
-                    const downloadPayload = {
-                        downloadToken: verified.downloadToken
-                    };
-
-                    console.log("TOKEN BEFORE DOWNLOAD:", {
-                        tokenType: typeof downloadPayload.downloadToken,
-                        tokenLength: downloadPayload.downloadToken.length
-                    });
-
                     const downloadResponse = await fetch(
                         `${API_BASE}/api/download`,
                         {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(downloadPayload)
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({
+                                downloadToken: verified.downloadToken
+                            })
                         }
                     );
 
@@ -292,7 +423,6 @@ async function demoBuy(event) {
                     }
 
                     alert("Payment verified. Your download is starting.");
-
                     window.location.assign(download.downloadUrl);
 
                 } catch (error) {
@@ -302,7 +432,6 @@ async function demoBuy(event) {
                         "Payment or download error: " + error.message +
                         "\nIf payment was completed, do not pay again. Contact support."
                     );
-
                 } finally {
                     button.disabled = false;
                     button.textContent = originalText;
@@ -322,19 +451,11 @@ async function demoBuy(event) {
         checkout.on("payment.failed", function(failure) {
             const error = failure.error || {};
 
-            console.error("RAZORPAY FAILURE DETAILS:", {
-                code: error.code,
-                description: error.description,
-                reason: error.reason,
-                source: error.source,
-                step: error.step
-            });
+            console.error("Razorpay payment failed:", error);
 
             alert(
-                "Payment failed!\n\n" +
-                "Reason: " +
-                (error.description || error.reason || "Unknown error") +
-                "\n\nNo download was authorized."
+                "Payment failed!\n\nReason: " +
+                (error.description || error.reason || "Unknown error")
             );
 
             button.disabled = false;
@@ -345,25 +466,14 @@ async function demoBuy(event) {
 
     } catch (error) {
         console.error("Checkout error:", error);
-
         alert("Checkout error: " + error.message);
-
         button.disabled = false;
         button.textContent = originalText;
     }
 }
 
-function applySearch() {
-    const term = document.getElementById("search").value.toLowerCase();
+document.getElementById("search").addEventListener("input", renderWallpapers);
 
-    document.querySelectorAll(".card").forEach((card) => {
-        card.style.display = (card.dataset.title || "")
-            .toLowerCase()
-            .includes(term) ? "" : "none";
-    });
-}
-
-document.getElementById("search").addEventListener("input", applySearch);
 loadWallpapers();
 </script>
 </body>

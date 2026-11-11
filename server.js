@@ -507,6 +507,76 @@ app.post("/api/download", async (req, res) => {
     }
 });
 
+// Free wallpaper download API
+app.post("/api/free-download", async (req, res) => {
+    try {
+        const { wallpaperId } = req.body || {};
+
+        if (
+            typeof wallpaperId !== "string" ||
+            !wallpaperId.trim()
+        ) {
+            return res.status(400).json({
+                error: "Wallpaper ID is required"
+            });
+        }
+
+        // Fetch published wallpaper
+        const { data: wallpaper, error } = await supabase
+            .from("wallpapers")
+            .select("id, price_paise, storage_path, is_published")
+            .eq("id", wallpaperId)
+            .eq("is_published", true)
+            .single();
+
+        if (error || !wallpaper) {
+            return res.status(404).json({
+                error: "Wallpaper not found"
+            });
+        }
+
+        // Free downloads only
+        if (Number(wallpaper.price_paise) !== 0) {
+            return res.status(403).json({
+                error: "This wallpaper is not free"
+            });
+        }
+
+        if (!wallpaper.storage_path) {
+            return res.status(404).json({
+                error: "Wallpaper file not found"
+            });
+        }
+
+        // Generate temporary private download URL
+        const { data: signed, error: signedError } =
+            await supabase.storage
+                .from("wallpaper-files")
+                .createSignedUrl(wallpaper.storage_path, 60);
+
+        if (signedError || !signed?.signedUrl) {
+            console.error("Free download URL failed:", signedError?.message);
+
+            return res.status(500).json({
+                error: "Could not create download link"
+            });
+        }
+
+        res.json({
+            downloadUrl: signed.signedUrl,
+            expiresInSeconds: 60
+        });
+
+    } catch (error) {
+        console.error("Free download failed:", error.message);
+
+        res.status(500).json({
+            error: "Unable to process free download"
+        });
+    }
+});
+
+
 // Start server
 app.listen(PORT, () => {
     console.log(
