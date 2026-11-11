@@ -139,7 +139,13 @@ app.post("/api/create-order", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Order creation failed:", error.message);
+        console.error(
+    "Order creation failed:",
+    error?.error?.description ||
+    error?.description ||
+    error?.message ||
+    String(error)
+);
 
         res.status(500).json({
             error: "Unable to create order"
