@@ -23,7 +23,7 @@ header nav{display:flex;gap:18px;flex-wrap:wrap}
 .search{margin-top:25px;padding:14px;width:min(90%,420px);border:1px solid #65428b;border-radius:10px;background:#1a1028;color:white;font-size:16px}
 .gallery{padding:25px 8% 70px}
 .gallery h2{margin-bottom:25px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
 .card{background:#171022;border:1px solid #30203f;border-radius:15px;overflow:hidden;transition:transform .2s}
 .card:hover{transform:translateY(-5px);border-color:#a855f7}
 .preview{height:230px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#38145c,#111827,#7028a8);color:#ead5ff;font-size:24px;font-weight:bold}
@@ -38,12 +38,18 @@ header nav{display:flex;gap:18px;flex-wrap:wrap}
 #admin form{display:flex;flex-direction:column;gap:14px;margin-top:20px}
 #admin input,#admin textarea{width:100%;padding:12px;border:1px solid #49305f;border-radius:8px;background:#0d0914;color:white}
 #admin textarea{min-height:90px;resize:vertical}
+.admin-wallpaper-list{display:grid;gap:10px;margin-top:16px}
+.admin-wallpaper-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#0d0914;border:1px solid #49305f;border-radius:10px}
+.admin-wallpaper-item span{overflow-wrap:anywhere}
+.delete-wallpaper{border:1px solid #ef4444;background:#7f1d1d;color:#fff;padding:9px 12px;border-radius:8px;cursor:pointer;flex-shrink:0}
+.delete-wallpaper:disabled{opacity:.6;cursor:wait}
 #admin-message,#upload-message{margin-top:12px;overflow-wrap:anywhere}
 footer{text-align:center;padding:25px 15px;color:#e9d5ff;background:#171022;border-top:1px solid #a855f7;margin-top:40px}
 footer h3{color:#c084fc;margin-bottom:15px}
 footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}
 footer p{font-size:13px;margin-top:18px}
-@media(max-width:600px){header{padding:18px 5%}.gallery{padding-left:5%;padding-right:5%}#admin{margin:25px 5%}}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){header{padding:18px 5%}.gallery{padding-left:5%;padding-right:5%}#admin{margin:25px 5%}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -436,6 +442,7 @@ document.getElementById("admin-login-form")
         message.textContent = "Login successful.";
 
         document.getElementById("admin-dashboard").style.display = "block";
+        await refreshAdminWallpapers();
 
     } catch (error) {
         console.error("Admin login error:", error);
