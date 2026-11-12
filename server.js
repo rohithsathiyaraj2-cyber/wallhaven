@@ -7,10 +7,9 @@ const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config();
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-// CORS support for local testing
+// CORS support
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -54,7 +53,8 @@ const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
-// Read-only Razorpay authentication check
+
+// Razorpay authentication check
 razorpay.orders.all({ count: 1 })
     .then(() => {
         console.log("RAZORPAY AUTH CHECK: SUCCESS");
@@ -68,6 +68,7 @@ razorpay.orders.all({ count: 1 })
             "Unknown error"
         );
     });
+
 // Health check
 app.get("/api/health", (req, res) => {
     res.json({
@@ -153,12 +154,12 @@ app.post("/api/create-order", async (req, res) => {
 
     } catch (error) {
         console.error(
-    "Order creation failed:",
-    error?.error?.description ||
-    error?.description ||
-    error?.message ||
-    String(error)
-);
+            "Order creation failed:",
+            error?.error?.description ||
+            error?.description ||
+            error?.message ||
+            String(error)
+        );
 
         res.status(500).json({
             error: "Unable to create order"
@@ -295,7 +296,7 @@ app.post("/api/verify-payment", async (req, res) => {
             .randomBytes(32)
             .toString("hex");
 
-        // Store only SHA-256 hash in database
+        // Store only SHA-256 hash
         const tokenHash = crypto
             .createHash("sha256")
             .update(downloadToken)
@@ -330,11 +331,12 @@ app.post("/api/verify-payment", async (req, res) => {
         }
 
         console.log("Download token created and saved.");
-console.log("TOKEN SAVE CHECK:", {
-    rowsSaved: tokenRows.length,
-    hashLength: tokenHash.length,
-    expiry: expiresAt
-});
+
+        console.log("TOKEN SAVE CHECK:", {
+            rowsSaved: tokenRows.length,
+            hashLength: tokenHash.length,
+            expiry: expiresAt
+        });
 
         res.json({
             verified: true,
@@ -357,12 +359,11 @@ console.log("TOKEN SAVE CHECK:", {
     }
 });
 
-// Secure one-time download API
+// Premium secure one-time download API
 app.post("/api/download", async (req, res) => {
     try {
         const { downloadToken } = req.body || {};
-	
-        // Safe diagnostic: actual token is never printed
+
         console.log("Download token diagnostic:", {
             isString: typeof downloadToken === "string",
             length:
@@ -442,13 +443,14 @@ app.post("/api/download", async (req, res) => {
             });
         }
 
-        // Create signed URL (60 seconds)
+        // Create signed URL that forces file download
         const { data: signed, error: signedError } =
             await supabase.storage
                 .from("wallpaper-files")
                 .createSignedUrl(
                     wallpaper.storage_path,
-                    60
+                    60,
+                    { download: true }
                 );
 
         if (signedError || !signed?.signedUrl) {
@@ -462,7 +464,7 @@ app.post("/api/download", async (req, res) => {
             });
         }
 
-        // Consume token once using conditional update
+        // Consume token once
         const { data: consumed, error: consumeError } =
             await supabase
                 .from("wallpaper_purchases")
@@ -491,7 +493,7 @@ app.post("/api/download", async (req, res) => {
             });
         }
 
-        console.log("Download access created successfully.");
+        console.log("Premium download link created.");
 
         res.json({
             downloadUrl: signed.signedUrl,
@@ -548,19 +550,28 @@ app.post("/api/free-download", async (req, res) => {
             });
         }
 
-        // Generate temporary private download URL
+        // Create signed URL that forces file download
         const { data: signed, error: signedError } =
             await supabase.storage
                 .from("wallpaper-files")
-                .createSignedUrl(wallpaper.storage_path, 60);
+                .createSignedUrl(
+                    wallpaper.storage_path,
+                    60,
+                    { download: true }
+                );
 
         if (signedError || !signed?.signedUrl) {
-            console.error("Free download URL failed:", signedError?.message);
+            console.error(
+                "Free download URL failed:",
+                signedError?.message
+            );
 
             return res.status(500).json({
                 error: "Could not create download link"
             });
         }
+
+        console.log("Free download link created.");
 
         res.json({
             downloadUrl: signed.signedUrl,
@@ -575,7 +586,6 @@ app.post("/api/free-download", async (req, res) => {
         });
     }
 });
-
 
 // Start server
 app.listen(PORT, () => {
