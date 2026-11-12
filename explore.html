@@ -4,21 +4,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WallHaven | Premium Wallpapers</title>
+<title>WallHaven | Explore Wallpapers</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 :root{
     --purple:#a855f7;
@@ -38,9 +31,7 @@ body{
     min-height:100vh;
 }
 
-button,input{
-    font-family:inherit;
-}
+button,input{font-family:inherit}
 
 header{
     display:flex;
@@ -49,10 +40,9 @@ header{
     flex-wrap:wrap;
     gap:15px;
     padding:22px 8%;
-    background:rgba(15,9,26,.72);
+    background:rgba(15,9,26,.82);
     border-bottom:1px solid var(--glass-border);
     backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
     position:sticky;
     top:0;
     z-index:100;
@@ -65,16 +55,12 @@ header{
     letter-spacing:-1px;
     color:#d8b4fe;
     text-shadow:0 0 22px #a855f788;
-}
-
-header a,footer a{
-    color:white;
     text-decoration:none;
 }
 
 header nav{
     display:flex;
-    gap:25px;
+    gap:24px;
     flex-wrap:wrap;
     align-items:center;
 }
@@ -84,12 +70,20 @@ header nav a{
     font-weight:600;
     letter-spacing:.3px;
     color:#d8b4fe;
+    text-decoration:none;
     transition:.3s;
 }
 
 header nav a:hover{
     color:white;
     text-shadow:0 0 14px var(--purple);
+}
+
+header nav .premium-link{
+    padding:10px 17px;
+    border:1px solid #a855f788;
+    border-radius:25px;
+    background:rgba(168,85,247,.13);
 }
 
 .hero{
@@ -132,9 +126,7 @@ header nav a:hover{
     transition:.3s;
 }
 
-.search::placeholder{
-    color:#a99ab9;
-}
+.search::placeholder{color:#a99ab9}
 
 .search:focus{
     border-color:#c084fc;
@@ -142,9 +134,7 @@ header nav a:hover{
     background:rgba(255,255,255,.09);
 }
 
-.categories{
-    padding:30px 8% 40px;
-}
+.categories{padding:30px 8% 40px}
 
 .category-heading{
     text-align:center;
@@ -176,7 +166,6 @@ header nav a:hover{
     border-radius:16px;
     background:rgba(255,255,255,.045);
     backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
     color:#d8b4fe;
     font-size:14px;
     font-weight:700;
@@ -202,9 +191,7 @@ header nav a:hover{
     box-shadow:0 0 24px #9333ea55;
 }
 
-.gallery{
-    padding:30px 8% 75px;
-}
+.gallery{padding:30px 8% 75px}
 
 .gallery-heading{
     display:flex;
@@ -242,7 +229,6 @@ header nav a:hover{
     border-radius:19px;
     overflow:hidden;
     backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
     transition:transform .3s,border-color .3s,box-shadow .3s;
 }
 
@@ -270,13 +256,9 @@ header nav a:hover{
     transition:transform .5s;
 }
 
-.card:hover .preview img{
-    transform:scale(1.045);
-}
+.card:hover .preview img{transform:scale(1.045)}
 
-.details{
-    padding:20px;
-}
+.details{padding:20px}
 
 .details h3{
     font-family:'Space Grotesk',sans-serif;
@@ -313,11 +295,7 @@ header nav a:hover{
     box-shadow:0 0 22px #a855f788;
 }
 
-.buy:disabled{
-    opacity:.6;
-    cursor:wait;
-    transform:none;
-}
+.buy:disabled{opacity:.6;cursor:wait;transform:none}
 
 .empty-message{
     color:var(--muted);
@@ -356,12 +334,11 @@ footer nav{
 footer nav a{
     font-size:13px;
     color:#c4b5d5;
+    text-decoration:none;
     transition:.3s;
 }
 
-footer nav a:hover{
-    color:white;
-}
+footer nav a:hover{color:white}
 
 footer p{
     font-size:13px;
@@ -370,50 +347,19 @@ footer p{
 }
 
 @media(max-width:900px){
-    .cards{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
-
-    .category-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-    }
+    .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 @media(max-width:600px){
-    header{
-        padding:18px 5%;
-    }
-
-    header nav{
-        gap:14px;
-    }
-
-    .hero{
-        padding-top:65px;
-    }
-
-    .gallery,.categories{
-        padding-left:5%;
-        padding-right:5%;
-    }
-
-    .cards{
-        grid-template-columns:1fr;
-    }
-
-    .category-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:10px;
-    }
-
-    .category-btn{
-        padding:15px 8px;
-        font-size:12px;
-    }
-
-    .gallery h2{
-        font-size:23px;
-    }
+    header{padding:18px 5%}
+    header nav{gap:14px}
+    .hero{padding-top:65px}
+    .gallery,.categories{padding-left:5%;padding-right:5%}
+    .cards{grid-template-columns:1fr}
+    .category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .category-btn{padding:15px 8px;font-size:12px}
+    .gallery h2{font-size:23px}
 }
 </style>
 </head>
@@ -421,25 +367,25 @@ footer p{
 <body>
 
 <header>
-    <div class="logo">WallHaven.</div>
+    <a class="logo" href="index.html">WallHaven.</a>
     <nav>
         <a href="#gallery">Explore Wallpapers</a>
+        <a class="premium-link" href="premium.html">✦ Premium</a>
         <a href="admin.html">Admin Login</a>
     </nav>
 </header>
 
 <section class="hero">
     <h1>Your Screen, <span>Your Style.</span></h1>
-    <p>Discover beautiful free and premium wallpapers for your PC and mobile.</p>
-    <input class="search" id="search" type="text" placeholder="Search wallpapers...">
+    <p>Discover beautiful free wallpapers for your PC and mobile.</p>
+    <input class="search" id="search" type="text" placeholder="Search free wallpapers...">
 </section>
 
 <section class="categories">
     <div class="category-heading">
         <h2>Explore Categories</h2>
-        <p>Choose your favourite wallpaper category</p>
+        <p>Choose your favourite free wallpaper category</p>
     </div>
-
     <div class="category-grid" id="categoryGrid">
         <button class="category-btn active" data-category="all">All Wallpapers</button>
     </div>
@@ -448,9 +394,8 @@ footer p{
 <section class="gallery" id="gallery">
     <div class="gallery-heading">
         <h2 id="galleryTitle">Free Wallpapers</h2>
-        <span class="gallery-label" id="galleryLabel">FREE COLLECTION</span>
+        <span class="gallery-label">FREE COLLECTION</span>
     </div>
-
     <div class="cards" id="cards">
         <p>Loading wallpapers...</p>
     </div>
@@ -472,13 +417,6 @@ footer p{
 "use strict";
 
 const API_BASE = "https://wallhaven.onrender.com";
-const SUPABASE_URL = "https://vxtryneiljxvrnakubdd.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_p1qEiO-agXUY6iyxH8OJnQ_rU0gg7Yp";
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
 
 const cardsContainer = document.getElementById("cards");
 const categoryGrid = document.getElementById("categoryGrid");
@@ -488,19 +426,15 @@ let selectedCategory = "all";
 
 async function readJson(response) {
     const data = await response.json().catch(() => ({}));
-
     if (!response.ok) {
         throw new Error(data.error || "Request failed. Please try again.");
     }
-
     return data;
 }
 
 function formatPrice(pricePaise) {
     const value = Number(pricePaise);
-
     if (!Number.isFinite(value) || value < 0) return null;
-
     return (value / 100).toFixed(2);
 }
 
@@ -508,17 +442,17 @@ function createCategories() {
     const categories = [
         ...new Set(
             allWallpapers
+                .filter(w => Number(w.price_paise) === 0)
                 .map(w => String(w.category || "").trim())
                 .filter(Boolean)
         )
-    ].sort((a, b) => a.localeCompare(b));
+    ].sort((a,b) => a.localeCompare(b));
 
     categoryGrid.innerHTML = "";
 
     const buttons = [
-        {name:"All Wallpapers", value:"all"},
-        {name:"Free", value:"free"},
-        {name:"Premium", value:"premium"}
+        {name:"All Wallpapers",value:"all"},
+        {name:"Free",value:"free"}
     ];
 
     buttons.forEach(item => {
@@ -527,9 +461,7 @@ function createCategories() {
         button.textContent = item.name;
         button.dataset.category = item.value;
 
-        if (item.value === "all") {
-            button.classList.add("active");
-        }
+        if (item.value === "all") button.classList.add("active");
 
         button.addEventListener("click", () => selectCategory(item.value));
         categoryGrid.appendChild(button);
@@ -553,54 +485,30 @@ function selectCategory(category) {
     selectedCategory = category;
 
     document.querySelectorAll(".category-btn").forEach(button => {
-        button.classList.toggle(
-            "active",
-            button.dataset.category === category
-        );
+        button.classList.toggle("active",button.dataset.category === category);
     });
 
-    const title = document.getElementById("galleryTitle");
-    const label = document.getElementById("galleryLabel");
-
-    if (category === "all") {
-        title.textContent = "Free Wallpapers";
-        label.textContent = "FREE COLLECTION";
-    } else if (category === "free") {
-        title.textContent = "Free Wallpapers";
-        label.textContent = "FREE COLLECTION";
-    } else if (category === "premium") {
-        title.textContent = "Premium Wallpapers";
-        label.textContent = "PREMIUM COLLECTION";
-    } else {
-        title.textContent = category.replace("category:", "") + " Wallpapers";
-        label.textContent = "FREE CATEGORY";
-    }
+    document.getElementById("galleryTitle").textContent =
+        category === "all" || category === "free"
+            ? "Free Wallpapers"
+            : category.replace("category:","") + " Wallpapers";
 
     renderWallpapers();
 }
 
 function renderWallpapers() {
-    const term = document.getElementById("search").value
-        .trim()
-        .toLowerCase();
+    const term = document.getElementById("search").value.trim().toLowerCase();
 
     const filtered = allWallpapers.filter(wallpaper => {
         const price = Number(wallpaper.price_paise);
-
         const isFree = Number.isFinite(price) && price === 0;
-        const isPremium = Number.isFinite(price) && price > 0;
 
         let matchesCategory = false;
 
         if (selectedCategory === "all" || selectedCategory === "free") {
             matchesCategory = isFree;
-        } else if (selectedCategory === "premium") {
-            matchesCategory = isPremium;
         } else if (selectedCategory.startsWith("category:")) {
-            const categoryName = selectedCategory
-                .replace("category:", "")
-                .toLowerCase();
-
+            const categoryName = selectedCategory.replace("category:","").toLowerCase();
             matchesCategory =
                 isFree &&
                 String(wallpaper.category || "").toLowerCase() === categoryName;
@@ -619,13 +527,7 @@ function renderWallpapers() {
     if (!filtered.length) {
         const message = document.createElement("p");
         message.className = "empty-message";
-
-        if (selectedCategory === "premium") {
-            message.textContent = "No premium wallpapers found.";
-        } else {
-            message.textContent = "No free wallpapers found in this category.";
-        }
-
+        message.textContent = "No free wallpapers found in this category.";
         cardsContainer.appendChild(message);
         return;
     }
@@ -633,7 +535,6 @@ function renderWallpapers() {
     filtered.forEach(wallpaper => {
         const card = document.createElement("article");
         card.className = "card";
-        card.dataset.title = wallpaper.title || "";
 
         const preview = document.createElement("div");
         preview.className = "preview";
@@ -641,7 +542,7 @@ function renderWallpapers() {
         if (wallpaper.preview_url) {
             const img = document.createElement("img");
             img.src = wallpaper.preview_url;
-            img.alt = `${wallpaper.title || "Wallpaper"} preview`;
+            img.alt = (wallpaper.title || "Wallpaper") + " preview";
             img.loading = "lazy";
 
             img.onerror = () => {
@@ -661,28 +562,23 @@ function renderWallpapers() {
         title.textContent = wallpaper.title || "Untitled wallpaper";
 
         const description = document.createElement("p");
-        description.textContent =
-            wallpaper.description || "Premium PC wallpaper";
+        description.textContent = wallpaper.description || "Free PC wallpaper";
 
         const price = formatPrice(wallpaper.price_paise);
-
         const button = document.createElement("button");
         button.className = "buy";
         button.dataset.wallpaperId = wallpaper.id || "";
 
         if (price === null || !wallpaper.id) {
-            button.textContent = "Price unavailable";
+            button.textContent = "Unavailable";
             button.disabled = true;
-        } else if (Number(wallpaper.price_paise) === 0) {
-            button.textContent = "Free Download";
-            button.addEventListener("click", freeDownload);
         } else {
-            button.textContent = `Buy Wallpaper: ₹${price}`;
-            button.addEventListener("click", demoBuy);
+            button.textContent = "Free Download";
+            button.addEventListener("click",freeDownload);
         }
 
-        details.append(title, description, button);
-        card.append(preview, details);
+        details.append(title,description,button);
+        card.append(preview,details);
         cardsContainer.appendChild(card);
     });
 }
@@ -695,12 +591,11 @@ async function loadWallpapers() {
         const result = await readJson(response);
 
         allWallpapers = result.wallpapers || [];
-
         createCategories();
         renderWallpapers();
 
-    } catch (error) {
-        console.error("Wallpaper loading error:", error);
+    } catch(error) {
+        console.error("Wallpaper loading error:",error);
         cardsContainer.innerHTML =
             "<p class='empty-message'>Wallpapers could not load. Please refresh the page.</p>";
     }
@@ -720,10 +615,10 @@ async function freeDownload(event) {
     button.textContent = "Preparing download...";
 
     try {
-        const response = await fetch(`${API_BASE}/api/free-download`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({wallpaperId})
+        const response = await fetch(`${API_BASE}/api/free-download`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({wallpaperId})
         });
 
         const result = await readJson(response);
@@ -734,152 +629,15 @@ async function freeDownload(event) {
 
         window.location.assign(result.downloadUrl);
 
-    } catch (error) {
-        console.error("Free download error:", error);
+    } catch(error) {
+        console.error("Free download error:",error);
         alert("Download error: " + error.message);
-    } finally {
         button.disabled = false;
         button.textContent = originalText;
     }
 }
 
-async function demoBuy(event) {
-    const button = event.currentTarget;
-    const wallpaperId = button.dataset.wallpaperId;
-
-    if (!wallpaperId) {
-        alert("Wallpaper ID is missing.");
-        return;
-    }
-
-    if (typeof window.Razorpay !== "function") {
-        alert("Razorpay Checkout did not load. Refresh the page.");
-        return;
-    }
-
-    button.disabled = true;
-
-    const originalText = button.textContent;
-    button.textContent = "Creating order...";
-
-    try {
-        const orderResponse = await fetch(`${API_BASE}/api/create-order`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({wallpaperId})
-        });
-
-        const order = await readJson(orderResponse);
-
-        if (!order.id || !order.keyId || !order.amount) {
-            throw new Error("Backend returned incomplete order details.");
-        }
-
-        const checkout = new window.Razorpay({
-            key: order.keyId,
-            amount: order.amount,
-            currency: order.currency || "INR",
-            name: "WallHaven",
-            description: "Premium Wallpaper Purchase",
-            order_id: order.id,
-
-            handler: async function(paymentResponse) {
-                button.textContent = "Verifying payment...";
-
-                try {
-                    const verifyResponse = await fetch(
-                        `${API_BASE}/api/verify-payment`,
-                        {
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({
-                                razorpay_order_id: paymentResponse.razorpay_order_id,
-                                razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                                razorpay_signature: paymentResponse.razorpay_signature
-                            })
-                        }
-                    );
-
-                    const verified = await readJson(verifyResponse);
-
-                    if (
-                        verified.verified !== true ||
-                        typeof verified.downloadToken !== "string" ||
-                        !/^[a-f0-9]{64}$/.test(verified.downloadToken)
-                    ) {
-                        throw new Error("Payment verified, but download token is missing or invalid.");
-                    }
-
-                    button.textContent = "Preparing download...";
-
-                    const downloadResponse = await fetch(
-                        `${API_BASE}/api/download`,
-                        {
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({
-                                downloadToken: verified.downloadToken
-                            })
-                        }
-                    );
-
-                    const download = await readJson(downloadResponse);
-
-                    if (!download.downloadUrl) {
-                        throw new Error("Download link was not created.");
-                    }
-
-                    alert("Payment verified. Your download is starting.");
-                    window.location.assign(download.downloadUrl);
-
-                } catch (error) {
-                    console.error("Payment/download error:", error);
-
-                    alert(
-                        "Payment or download error: " + error.message +
-                        "\nIf payment was completed, do not pay again. Contact support."
-                    );
-                } finally {
-                    button.disabled = false;
-                    button.textContent = originalText;
-                }
-            },
-
-            modal: {
-                ondismiss: function() {
-                    button.disabled = false;
-                    button.textContent = originalText;
-                }
-            },
-
-            theme: {color: "#9333ea"}
-        });
-
-        checkout.on("payment.failed", function(failure) {
-            const error = failure.error || {};
-
-            console.error("Razorpay payment failed:", error);
-
-            alert(
-                "Payment failed!\n\nReason: " +
-                (error.description || error.reason || "Unknown error")
-            );
-
-            button.disabled = false;
-            button.textContent = originalText;
-        });
-
-        checkout.open();
-
-    } catch (error) {
-        console.error("Checkout error:", error);
-        alert("Checkout error: " + error.message);
-        button.disabled = false;
-        button.textContent = originalText;
-    }
-}
-
-document.getElementById("search").addEventListener("input", renderWallpapers);
+document.getElementById("search").addEventListener("input",renderWallpapers);
 
 loadWallpapers();
 </script>

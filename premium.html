@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WallHaven | Premium Wallpapers</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+    --purple:#a855f7;
+    --light:#e9d5ff;
+    --muted:#b9adc9;
+    --border:rgba(216,180,254,.2);
+    --glass:rgba(255,255,255,.055);
+}
+
+body{
+    font-family:'Outfit',sans-serif;
+    color:white;
+    min-height:100vh;
+    background:
+        radial-gradient(ellipse at 15% 5%,rgba(126,34,206,.28),transparent 38%),
+        radial-gradient(ellipse at 85% 35%,rgba(88,28,135,.2),transparent 40%),
+        radial-gradient(ellipse at 50% 100%,rgba(109,40,217,.13),transparent 40%),
+        #08050e;
+}
+
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    padding:20px 8%;
+    background:rgba(10,6,18,.85);
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(22px);
+}
+
+.logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:29px;
+    font-weight:700;
+    color:var(--light);
+    text-shadow:0 0 25px #a855f788;
+}
+
+header nav{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+header nav a{font-size:14px;font-weight:600;color:#d8b4fe;transition:.25s}
+header nav a:hover{color:white;text-shadow:0 0 15px var(--purple)}
+
+header nav .premium-link{
+    padding:10px 17px;
+    border:1px solid #a855f788;
+    border-radius:30px;
+    background:rgba(168,85,247,.14);
+}
+
+.hero{
+    text-align:center;
+    padding:95px 20px 55px;
+}
+
+.eyebrow{
+    display:inline-block;
+    padding:9px 17px;
+    border:1px solid #c084fc66;
+    border-radius:30px;
+    color:#e9d5ff;
+    background:rgba(168,85,247,.12);
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2px;
+    margin-bottom:25px;
+}
+
+.hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(40px,7vw,78px);
+    line-height:1.08;
+    letter-spacing:-3px;
+    margin-bottom:22px;
+}
+
+.hero h1 span{
+    display:block;
+    background:linear-gradient(90deg,#a855f7,#f0d9ff,#c084fc);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 20px #a855f733);
+}
+
+.hero p{
+    max-width:620px;
+    margin:auto;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.8;
+}
+
+.search-wrap{margin-top:32px}
+
+.search{
+    width:min(90%,460px);
+    padding:16px 20px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    outline:none;
+    color:white;
+    background:rgba(255,255,255,.06);
+    backdrop-filter:blur(15px);
+}
+
+.search::placeholder{color:#a99ab9}
+.search:focus{border-color:#c084fc;box-shadow:0 0 24px #9333ea44}
+
+.premium-intro{
+    max-width:1100px;
+    margin:0 auto 35px;
+    padding:0 25px;
+}
+
+.intro-panel{
+    text-align:center;
+    padding:28px 20px;
+    border:1px solid var(--border);
+    border-radius:22px;
+    background:linear-gradient(120deg,rgba(168,85,247,.13),rgba(255,255,255,.025));
+    backdrop-filter:blur(18px);
+}
+
+.intro-panel h2{
+    font-family:'Space Grotesk',sans-serif;
+    color:#f3e8ff;
+    font-size:25px;
+    margin-bottom:9px;
+}
+
+.intro-panel p{color:var(--muted);font-size:14px;line-height:1.7}
+
+.categories{
+    max-width:1200px;
+    margin:auto;
+    padding:25px 8% 35px;
+}
+
+.section-heading{text-align:center;margin-bottom:22px}
+.section-heading h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:27px;
+    color:#f3e8ff;
+}
+.section-heading p{color:var(--muted);font-size:13px;margin-top:8px}
+
+.category-grid{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.category-btn{
+    padding:12px 20px;
+    border:1px solid var(--border);
+    border-radius:30px;
+    color:#d8b4fe;
+    background:rgba(255,255,255,.045);
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+    text-transform:capitalize;
+}
+
+.category-btn:hover,.category-btn.active{
+    color:white;
+    border-color:#c084fc;
+    background:linear-gradient(120deg,#7e22ce,#a855f7);
+    box-shadow:0 0 22px #9333ea55;
+}
+
+.gallery{
+    max-width:1400px;
+    margin:auto;
+    padding:30px 8% 85px;
+}
+
+.gallery-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:28px;
+}
+
+.gallery-heading h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:28px;
+    color:#f3e8ff;
+}
+
+.gallery-label{
+    color:#e9d5ff;
+    border:1px solid var(--border);
+    background:rgba(168,85,247,.12);
+    border-radius:30px;
+    padding:9px 15px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:25px;
+}
+
+.card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:21px;
+    background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+    backdrop-filter:blur(20px);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    border-color:#c084fc;
+    box-shadow:0 18px 50px #7e22ce30;
+}
+
+.preview{
+    height:245px;
+    position:relative;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    color:#e9d5ff;
+    background:linear-gradient(135deg,#38145c,#111827,#7028a8);
+}
+
+.preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform .6s;
+}
+
+.card:hover .preview img{transform:scale(1.06)}
+
+.premium-tag{
+    position:absolute;
+    top:14px;
+    left:14px;
+    z-index:2;
+    padding:8px 12px;
+    border:1px solid #e9d5ff66;
+    border-radius:30px;
+    color:white;
+    background:rgba(65,20,105,.8);
+    backdrop-filter:blur(10px);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.details{padding:21px}
+
+.details h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:19px;
+    overflow-wrap:anywhere;
+}
+
+.details p{
+    min-height:42px;
+    margin:10px 0 16px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+}
+
+.meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:17px;
+    color:#c4b5d5;
+    font-size:12px;
+    text-transform:capitalize;
+}
+
+.price{
+    color:#e9d5ff;
+    font-size:19px;
+    font-weight:800;
+}
+
+.buy{
+    width:100%;
+    padding:15px;
+    border:1px solid #e9d5ff66;
+    border-radius:13px;
+    color:white;
+    background:linear-gradient(110deg,#6b21a8,#a855f7,#7e22ce);
+    background-size:200% 100%;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.buy:hover{
+    background-position:100% 0;
+    transform:translateY(-2px);
+    box-shadow:0 0 25px #a855f777;
+}
+
+.buy:disabled{opacity:.6;cursor:wait;transform:none}
+
+.empty-message{
+    grid-column:1/-1;
+    padding:40px 20px;
+    text-align:center;
+    color:var(--muted);
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:var(--glass);
+}
+
+footer{
+    padding:35px 15px;
+    text-align:center;
+    border-top:1px solid var(--border);
+    background:rgba(255,255,255,.025);
+}
+
+footer h3{
+    font-family:'Space Grotesk',sans-serif;
+    color:#d8b4fe;
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+footer p{color:#a99ab9;font-size:12px;margin-top:17px}
+
+@media(max-width:900px){
+    .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:600px){
+    header{padding:17px 5%}
+    header nav{gap:13px}
+    header nav a{font-size:12px}
+    .hero{padding-top:65px}
+    .hero h1{letter-spacing:-1.5px}
+    .categories,.gallery{padding-left:5%;padding-right:5%}
+    .cards{grid-template-columns:1fr}
+    .gallery-heading h2{font-size:23px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <a class="logo" href="index.html">WallHaven.</a>
+    <nav>
+        <a href="explore.html">← Explore Free</a>
+        <a class="premium-link" href="premium.html">✦ Premium</a>
+        <a href="admin.html">Admin Login</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="eyebrow">✦ THE EXCLUSIVE COLLECTION ✦</div>
+    <h1>Not Just Wallpapers.<span>Premium Experiences.</span></h1>
+    <p>Discover exclusive wallpapers crafted to transform your screen. Choose your favourite design and make your setup stand out.</p>
+    <div class="search-wrap">
+        <input class="search" id="search" type="search" placeholder="Search premium wallpapers...">
+    </div>
+</section>
+
+<section class="premium-intro">
+    <div class="intro-panel">
+        <h2>✦ Curated for Your Screen</h2>
+        <p>Explore our exclusive paid collection. Every wallpaper is listed with its category and price. Your purchased wallpaper will be available through our secure download process.</p>
+    </div>
+</section>
+
+<section class="categories">
+    <div class="section-heading">
+        <h2>Premium Categories</h2>
+        <p>Choose a category to explore exclusive designs</p>
+    </div>
+    <div class="category-grid" id="categoryGrid">
+        <button class="category-btn active" data-category="all">All Premium</button>
+    </div>
+</section>
+
+<section class="gallery">
+    <div class="gallery-heading">
+        <h2 id="galleryTitle">Exclusive Wallpapers</h2>
+        <span class="gallery-label">PREMIUM COLLECTION</span>
+    </div>
+    <div class="cards" id="cards">
+        <p class="empty-message">Loading premium wallpapers...</p>
+    </div>
+</section>
+
+<footer>
+    <h3>WallHaven.</h3>
+    <a href="explore.html">Explore Free Wallpapers</a>
+    <p>© WallHaven. All rights reserved.</p>
+</footer>
+
+<script>
+"use strict";
+
+const API_BASE = "https://wallhaven.onrender.com";
+
+const cardsContainer = document.getElementById("cards");
+const categoryGrid = document.getElementById("categoryGrid");
+
+let allPremiumWallpapers = [];
+let selectedCategory = "all";
+
+async function readJson(response) {
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.error || "Request failed. Please try again.");
+    }
+    return data;
+}
+
+function formatPrice(pricePaise) {
+    const value = Number(pricePaise);
+    if (!Number.isFinite(value) || value <= 0) return null;
+    return (value / 100).toFixed(2);
+}
+
+function createCategories() {
+    const categories = [
+        ...new Set(
+            allPremiumWallpapers
+                .map(w => String(w.category || "").trim())
+                .filter(Boolean)
+        )
+    ].sort((a,b) => a.localeCompare(b));
+
+    categoryGrid.innerHTML = "";
+
+    const allButton = document.createElement("button");
+    allButton.className = "category-btn active";
+    allButton.textContent = "All Premium";
+    allButton.dataset.category = "all";
+    allButton.addEventListener("click",() => selectCategory("all"));
+    categoryGrid.appendChild(allButton);
+
+    categories.forEach(category => {
+        const button = document.createElement("button");
+        button.className = "category-btn";
+        button.textContent = category;
+        button.dataset.category = category.toLowerCase();
+        button.addEventListener("click",() => selectCategory(category.toLowerCase()));
+        categoryGrid.appendChild(button);
+    });
+}
+
+function selectCategory(category) {
+    selectedCategory = category;
+
+    document.querySelectorAll(".category-btn").forEach(button => {
+        button.classList.toggle("active",button.dataset.category === category);
+    });
+
+    document.getElementById("galleryTitle").textContent =
+        category === "all"
+            ? "Exclusive Wallpapers"
+            : category.charAt(0).toUpperCase() + category.slice(1) + " Wallpapers";
+
+    renderWallpapers();
+}
+
+function renderWallpapers() {
+    const term = document.getElementById("search").value.trim().toLowerCase();
+
+    const filtered = allPremiumWallpapers.filter(wallpaper => {
+        const category = String(wallpaper.category || "").toLowerCase();
+
+        const matchesCategory =
+            selectedCategory === "all" || category === selectedCategory;
+
+        const matchesSearch =
+            String(wallpaper.title || "").toLowerCase().includes(term) ||
+            String(wallpaper.description || "").toLowerCase().includes(term) ||
+            category.includes(term);
+
+        return matchesCategory && matchesSearch;
+    });
+
+    cardsContainer.innerHTML = "";
+
+    if (!filtered.length) {
+        const message = document.createElement("p");
+        message.className = "empty-message";
+        message.textContent = allPremiumWallpapers.length
+            ? "No premium wallpapers found in this category."
+            : "No premium wallpapers are available right now. Please check again soon.";
+
+        cardsContainer.appendChild(message);
+        return;
+    }
+
+    filtered.forEach(wallpaper => {
+        const card = document.createElement("article");
+        card.className = "card";
+
+        const preview = document.createElement("div");
+        preview.className = "preview";
+
+        const tag = document.createElement("span");
+        tag.className = "premium-tag";
+        tag.textContent = "✦ PREMIUM";
+        preview.appendChild(tag);
+
+        if (wallpaper.preview_url) {
+            const img = document.createElement("img");
+            img.src = wallpaper.preview_url;
+            img.alt = (wallpaper.title || "Premium wallpaper") + " preview";
+            img.loading = "lazy";
+
+            img.onerror = () => {
+                img.remove();
+                const fallback = document.createElement("span");
+                fallback.textContent = wallpaper.category || "PREMIUM WALLPAPER";
+                preview.appendChild(fallback);
+            };
+
+            preview.appendChild(img);
+        } else {
+            const fallback = document.createElement("span");
+            fallback.textContent = wallpaper.category || "PREMIUM WALLPAPER";
+            preview.appendChild(fallback);
+        }
+
+        const details = document.createElement("div");
+        details.className = "details";
+
+        const title = document.createElement("h3");
+        title.textContent = wallpaper.title || "Untitled wallpaper";
+
+        const description = document.createElement("p");
+        description.textContent = wallpaper.description || "Exclusive premium wallpaper";
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        const category = document.createElement("span");
+        category.textContent = wallpaper.category || "Premium";
+
+        const priceValue = formatPrice(wallpaper.price_paise);
+        const price = document.createElement("span");
+        price.className = "price";
+        price.textContent = priceValue ? "₹" + priceValue : "Price unavailable";
+
+        meta.append(category,price);
+
+        const button = document.createElement("button");
+        button.className = "buy";
+        button.dataset.wallpaperId = wallpaper.id || "";
+
+        if (!priceValue || !wallpaper.id) {
+            button.textContent = "Unavailable";
+            button.disabled = true;
+        } else {
+            button.textContent = "Buy Wallpaper · ₹" + priceValue;
+            button.addEventListener("click",buyPremiumWallpaper);
+        }
+
+        details.append(title,description,meta,button);
+        card.append(preview,details);
+        cardsContainer.appendChild(card);
+    });
+}
+
+async function loadPremiumWallpapers() {
+    cardsContainer.innerHTML = "<p class='empty-message'>Loading premium wallpapers...</p>";
+
+    try {
+        const response = await fetch(`${API_BASE}/api/wallpapers`);
+        const result = await readJson(response);
+
+        allPremiumWallpapers = (result.wallpapers || []).filter(wallpaper => {
+            const price = Number(wallpaper.price_paise);
+            return Number.isFinite(price) && price > 0;
+        });
+
+        createCategories();
+        renderWallpapers();
+
+    } catch(error) {
+        console.error("Premium wallpaper loading error:",error);
+        cardsContainer.innerHTML =
+            "<p class='empty-message'>Premium wallpapers could not load. Please refresh the page.</p>";
+    }
+}
+
+async function buyPremiumWallpaper(event) {
+    const button = event.currentTarget;
+    const wallpaperId = button.dataset.wallpaperId;
+
+    if (!wallpaperId) {
+        alert("Wallpaper ID is missing.");
+        return;
+    }
+
+    if (typeof window.Razorpay !== "function") {
+        alert("Razorpay Checkout did not load. Please refresh the page.");
+        return;
+    }
+
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Creating order...";
+
+    try {
+        const orderResponse = await fetch(`${API_BASE}/api/create-order`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({wallpaperId})
+        });
+
+        const order = await readJson(orderResponse);
+
+        if (!order.id || !order.keyId || !order.amount) {
+            throw new Error("Backend returned incomplete order details.");
+        }
+
+        const checkout = new window.Razorpay({
+            key:order.keyId,
+            amount:order.amount,
+            currency:order.currency || "INR",
+            name:"WallHaven",
+            description:"Premium Wallpaper Purchase",
+            order_id:order.id,
+
+            handler:async function(paymentResponse) {
+                button.textContent = "Verifying payment...";
+
+                try {
+                    const verifyResponse = await fetch(
+                        `${API_BASE}/api/verify-payment`,
+                        {
+                            method:"POST",
+                            headers:{"Content-Type":"application/json"},
+                            body:JSON.stringify({
+                                razorpay_order_id:paymentResponse.razorpay_order_id,
+                                razorpay_payment_id:paymentResponse.razorpay_payment_id,
+                                razorpay_signature:paymentResponse.razorpay_signature
+                            })
+                        }
+                    );
+
+                    const verified = await readJson(verifyResponse);
+
+                    if (
+                        verified.verified !== true ||
+                        typeof verified.downloadToken !== "string" ||
+                        !/^[a-f0-9]{64}$/.test(verified.downloadToken)
+                    ) {
+                        throw new Error("Payment verified, but download token is missing or invalid.");
+                    }
+
+                    button.textContent = "Preparing download...";
+
+                    const downloadResponse = await fetch(
+                        `${API_BASE}/api/download`,
+                        {
+                            method:"POST",
+                            headers:{"Content-Type":"application/json"},
+                            body:JSON.stringify({
+                                downloadToken:verified.downloadToken
+                            })
+                        }
+                    );
+
+                    const download = await readJson(downloadResponse);
+
+                    if (!download.downloadUrl) {
+                        throw new Error("Download link was not created.");
+                    }
+
+                    alert("Payment verified. Your download is starting.");
+                    window.location.assign(download.downloadUrl);
+
+                } catch(error) {
+                    console.error("Payment/download error:",error);
+                    alert(
+                        "Payment or download error: " + error.message +
+                        "\nIf payment was completed, do not pay again. Contact support."
+                    );
+                } finally {
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            },
+
+            modal:{
+                ondismiss:function() {
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            },
+
+            theme:{color:"#9333ea"}
+        });
+
+        checkout.on("payment.failed",function(failure) {
+            const error = failure.error || {};
+            console.error("Razorpay payment failed:",error);
+
+            alert(
+                "Payment failed!\n\nReason: " +
+                (error.description || error.reason || "Unknown error")
+            );
+
+            button.disabled = false;
+            button.textContent = originalText;
+        });
+
+        checkout.open();
+
+    } catch(error) {
+        console.error("Checkout error:",error);
+        alert("Checkout error: " + error.message);
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+document.getElementById("search").addEventListener("input",renderWallpapers);
+
+loadPremiumWallpapers();
+</script>
+
+</body>
+</html>
