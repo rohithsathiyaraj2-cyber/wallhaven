@@ -6,6 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome | WallHaven</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 * {
     margin: 0;
@@ -15,11 +19,11 @@
 
 body {
     min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     color: white;
     background:
-        radial-gradient(ellipse at 50% 45%, rgba(119, 36, 210, 0.28), transparent 55%),
-        linear-gradient(135deg, #08040f, #160626, #090410);
+        radial-gradient(ellipse at 50% 45%, rgba(119,36,210,.28), transparent 55%),
+        linear-gradient(135deg,#08040f,#160626,#090410);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,108 +31,150 @@ body {
     overflow-x: hidden;
 }
 
+/* Background effects */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     background-image:
-        linear-gradient(rgba(180,100,255,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(180,100,255,.035) 1px, transparent 1px);
+        linear-gradient(rgba(180,100,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(180,100,255,.045) 1px,transparent 1px);
     background-size: 45px 45px;
-    mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom,black,transparent);
 }
 
+body::after {
+    content: "";
+    position: fixed;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: rgba(125,40,255,.12);
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+/* Main content */
 .container {
     width: 100%;
-    max-width: 900px;
-    padding: 40px 22px;
+    max-width: 950px;
+    padding: 45px 22px;
     position: relative;
     z-index: 1;
 }
 
 .tagline {
-    color: #c59aff;
-    letter-spacing: 5px;
-    font-size: 12px;
-    margin-bottom: 25px;
-    text-transform: uppercase;
+    color: #d2a4ff;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 6px;
+    font-size: 11px;
+    margin-bottom: 28px;
+    text-shadow: 0 0 15px #a34cff;
 }
 
 h1 {
-    font-size: clamp(38px, 7vw, 76px);
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(32px,6vw,67px);
     font-weight: 800;
-    line-height: 1.15;
-    background: linear-gradient(90deg, #ffffff, #c58aff, #8e43ff);
+    line-height: 1.3;
+    letter-spacing: 1px;
+    background: linear-gradient(
+        110deg,
+        #ffffff 5%,
+        #e4caff 35%,
+        #b56cff 65%,
+        #f2e5ff 90%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 35px rgba(155, 75, 255, .15);
+    filter: drop-shadow(0 0 17px rgba(169,91,255,.45));
 }
 
 .subtitle {
-    color: #b9a9ca;
-    font-size: 16px;
-    margin: 22px auto 38px;
+    color: #d0bedf;
+    font-size: 19px;
+    letter-spacing: 1.5px;
+    margin: 25px auto 40px;
     line-height: 1.7;
 }
 
+/* Glass buttons */
 .buttons {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
 }
 
 .btn {
-    padding: 15px 34px;
-    border-radius: 9px;
-    border: 1px solid #a45aff;
-    color: white;
-    background: rgba(126, 48, 220, .13);
+    position: relative;
+    padding: 15px 38px;
+    border-radius: 10px;
+    border: 1px solid rgba(202,155,255,.65);
+    color: #fff;
+    background: rgba(143,70,220,.13);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     text-decoration: none;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
     cursor: pointer;
-    transition: .3s;
+    transition: .35s ease;
+    box-shadow:
+        inset 0 0 15px rgba(190,130,255,.08),
+        0 0 15px rgba(153,75,255,.12);
 }
 
 .btn:hover {
-    background: #8d3df5;
-    box-shadow: 0 0 25px rgba(155, 75, 255, .55);
-    transform: translateY(-3px);
+    background: rgba(157,76,255,.3);
+    border-color: #e0baff;
+    box-shadow:
+        0 0 12px #9c4dff,
+        0 0 30px rgba(156,77,255,.55),
+        inset 0 0 18px rgba(210,170,255,.2);
+    transform: translateY(-4px);
+    color: white;
 }
 
-.explore {
-    display: inline-block;
-    margin-top: 23px;
-    padding: 16px 42px;
-    background: linear-gradient(100deg, #7628d8, #ad55ff);
-    border: none;
-    box-shadow: 0 0 25px rgba(150, 65, 255, .25);
+.btn:active {
+    transform: scale(.97);
 }
 
+/* Footer */
 footer {
     position: absolute;
     bottom: 25px;
     left: 0;
     width: 100%;
-    color: #9684aa;
-    font-size: 13px;
-    letter-spacing: 1px;
+    color: #b7a2ca;
+    font-size: 15px;
+    letter-spacing: 2px;
+    z-index: 2;
 }
 
 footer a {
-    color: #c58aff;
+    color: #d5a9ff;
     text-decoration: none;
     font-weight: 700;
+    transition: .3s;
 }
 
+footer a:hover {
+    color: white;
+    text-shadow: 0 0 15px #b66aff;
+}
+
+/* Authentication modal */
 .modal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.82);
+    background: rgba(3,0,10,.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     justify-content: center;
     align-items: center;
     padding: 20px;
@@ -137,62 +183,148 @@ footer a {
 
 .modal-box {
     width: 100%;
-    max-width: 390px;
-    padding: 35px 25px;
-    background: #170d25;
-    border: 1px solid #8e43d8;
-    border-radius: 16px;
-    box-shadow: 0 0 35px rgba(135, 55, 220, .3);
+    max-width: 410px;
+    padding: 38px 30px;
+    position: relative;
+    background: rgba(35,16,57,.72);
+    border: 1px solid rgba(195,139,255,.65);
+    border-radius: 20px;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow:
+        0 0 25px rgba(147,63,255,.3),
+        inset 0 0 25px rgba(180,120,255,.08);
+    animation: popup .35s ease;
+}
+
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(.94);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal-box h2 {
-    color: #d2aaff;
-    margin-bottom: 22px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    color: #e2c4ff;
+    margin: 10px 0 27px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px #a64dff;
 }
 
 .modal-box input {
     width: 100%;
-    padding: 13px;
-    margin: 9px 0;
-    background: #0d0715;
+    padding: 15px;
+    margin: 10px 0;
+    background: rgba(8,3,18,.65);
     color: white;
-    border: 1px solid #58327b;
-    border-radius: 7px;
+    border: 1px solid rgba(173,112,230,.45);
+    border-radius: 9px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
     outline: none;
+    transition: .3s;
+}
+
+.modal-box input:focus {
+    border-color: #c58aff;
+    box-shadow: 0 0 15px rgba(165,83,255,.35);
+}
+
+.modal-box input::placeholder {
+    color: #a995bb;
 }
 
 .modal-box .btn {
     width: 100%;
-    margin-top: 15px;
+    margin-top: 18px;
 }
 
 .close {
-    float: right;
+    position: absolute;
+    top: 15px;
+    right: 20px;
     cursor: pointer;
-    color: #c59aff;
-    font-size: 22px;
+    color: #d5aaff;
+    font-size: 27px;
+    transition: .3s;
+}
+
+.close:hover {
+    color: white;
+    text-shadow: 0 0 15px #bd79ff;
 }
 
 #message {
-    margin-top: 15px;
-    color: #c59aff;
-    font-size: 13px;
+    margin-top: 17px;
+    color: #d9baff;
+    font-size: 15px;
+    letter-spacing: .5px;
 }
 
+/* Success popup */
+.success-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 15px #b46aff);
+}
+
+.success-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #e6ccff;
+    font-size: 21px;
+    line-height: 1.5;
+    text-shadow: 0 0 15px #a54cff;
+}
+
+.success-text {
+    color: #c8b5dc;
+    font-size: 17px;
+    margin: 15px 0 25px;
+    line-height: 1.6;
+}
+
+.explore-btn {
+    display: block;
+    width: 100%;
+    padding: 17px 12px;
+    background: linear-gradient(110deg,#7628d8,#ae5cff);
+    border: 1px solid #d9b3ff;
+    box-shadow: 0 0 25px rgba(160,75,255,.4);
+}
+
+.explore-btn:hover {
+    background: linear-gradient(110deg,#913eff,#c17aff);
+}
+
+/* Mobile */
 @media(max-width: 500px) {
     .buttons {
         flex-direction: column;
-        padding: 0 15px;
+        padding: 0 12px;
     }
 
-    .btn {
+    .buttons .btn {
         width: 100%;
+    }
+
+    .tagline {
+        letter-spacing: 3px;
     }
 
     footer {
         position: relative;
-        margin-top: 65px;
+        margin-top: 70px;
         bottom: auto;
+    }
+
+    .modal-box {
+        padding: 35px 22px;
     }
 }
 </style>
@@ -216,10 +348,6 @@ footer a {
         <button class="btn" onclick="openAuth('signup')">SIGN UP</button>
     </div>
 
-    <a href="explore.html" class="btn explore">
-        EXPLORE WALLPAPERS →
-    </a>
-
 </div>
 
 <footer>
@@ -230,18 +358,60 @@ footer a {
     </a>
 </footer>
 
+<!-- Login / Signup -->
 <div class="modal" id="authModal">
     <div class="modal-box">
+
         <span class="close" onclick="closeAuth()">×</span>
+
         <h2 id="authTitle">LOGIN</h2>
 
         <form id="authForm">
-            <input type="email" id="email" placeholder="Email address" required>
-            <input type="password" id="password" placeholder="Password" minlength="6" required>
-            <button type="submit" class="btn" id="authSubmit">LOGIN</button>
+            <input
+                type="email"
+                id="email"
+                placeholder="Email address"
+                autocomplete="email"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                minlength="6"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit" class="btn" id="authSubmit">
+                LOGIN
+            </button>
         </form>
 
-        <p id="message"></p>
+        <p id="message" role="status"></p>
+
+    </div>
+</div>
+
+<!-- Successful login/signup popup -->
+<div class="modal" id="successModal">
+    <div class="modal-box">
+
+        <div class="success-icon">✦</div>
+
+        <h2 class="success-title" id="successTitle">
+            WELCOME TO WALLHAVEN
+        </h2>
+
+        <p class="success-text" id="successText">
+            Your journey into a world of extraordinary wallpapers starts here.
+        </p>
+
+        <a href="explore.html" class="btn explore-btn">
+            EXPLORE WALLPAPERS →
+        </a>
+
     </div>
 </div>
 
@@ -260,18 +430,39 @@ let authMode = "login";
 
 function openAuth(mode) {
     authMode = mode;
+
     document.getElementById("authTitle").textContent =
         mode === "login" ? "LOGIN" : "CREATE ACCOUNT";
 
     document.getElementById("authSubmit").textContent =
         mode === "login" ? "LOGIN" : "SIGN UP";
 
+    document.getElementById("password").autocomplete =
+        mode === "login" ? "current-password" : "new-password";
+
     document.getElementById("message").textContent = "";
+
     document.getElementById("authModal").style.display = "flex";
 }
 
 function closeAuth() {
     document.getElementById("authModal").style.display = "none";
+}
+
+function showSuccess(mode, email) {
+    document.getElementById("authModal").style.display = "none";
+
+    document.getElementById("successTitle").textContent =
+        mode === "signup"
+        ? "ACCOUNT CREATED!"
+        : "WELCOME BACK!";
+
+    document.getElementById("successText").textContent =
+        mode === "signup"
+        ? "Your WallHaven account is ready. Explore your new wallpaper collection."
+        : "Login successful! Your wallpaper experience is waiting for you.";
+
+    document.getElementById("successModal").style.display = "flex";
 }
 
 document.getElementById("authForm").addEventListener("submit", async function(e) {
@@ -280,8 +471,11 @@ document.getElementById("authForm").addEventListener("submit", async function(e)
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const message = document.getElementById("message");
+    const submitButton = document.getElementById("authSubmit");
 
     message.textContent = "Please wait...";
+    submitButton.disabled = true;
+    submitButton.textContent = "PLEASE WAIT...";
 
     try {
         let result;
@@ -291,33 +485,53 @@ document.getElementById("authForm").addEventListener("submit", async function(e)
                 email: email,
                 password: password
             });
-
-            if (!result.error) {
-                message.textContent =
-                    "Account created! Check your email if verification is required.";
-            }
         } else {
             result = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password
             });
-
-            if (!result.error) {
-                message.textContent = "Login successful!";
-            }
         }
 
         if (result.error) {
             message.textContent = result.error.message;
+            return;
+        }
+
+        if (authMode === "signup" && !result.data.session) {
+            message.textContent =
+                "Account created! Please verify your email, then login to continue.";
+            return;
+        }
+
+        if (result.data.session) {
+            showSuccess(authMode, email);
+        } else {
+            message.textContent =
+                "Authentication completed, but no active session was created. Please login to continue.";
         }
 
     } catch (error) {
-        message.textContent = "Something went wrong. Please try again.";
+        message.textContent =
+            error.message || "Something went wrong. Please try again.";
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent =
+            authMode === "login" ? "LOGIN" : "SIGN UP";
     }
 });
 
+// Close login modal when clicking outside
 document.getElementById("authModal").addEventListener("click", function(e) {
-    if (e.target === this) closeAuth();
+    if (e.target === this) {
+        closeAuth();
+    }
+});
+
+// Close success popup if clicking outside
+document.getElementById("successModal").addEventListener("click", function(e) {
+    if (e.target === this) {
+        this.style.display = "none";
+    }
 });
 </script>
 
