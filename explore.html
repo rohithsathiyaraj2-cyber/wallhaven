@@ -6,71 +6,420 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WallHaven | Premium Wallpapers</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#0b0714;color:white}
-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;padding:22px 8%;background:#120b20;border-bottom:1px solid #332044}
-.logo{font-size:27px;font-weight:bold;color:#c084fc}
-header a,footer a{color:white;text-decoration:none}
-header nav{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
-header nav a{font-weight:800;letter-spacing:.4px;color:#c084fc;text-shadow:0 0 10px rgba(168,85,247,.35);transition:.2s}
-header nav a:hover{color:#fff;text-shadow:0 0 14px #a855f7}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-.hero{text-align:center;padding:75px 20px 35px}
-.hero h1{font-size:clamp(32px,6vw,55px);margin-bottom:16px}
-.hero span{color:#c084fc}
-.hero p{color:#b9adc9;line-height:1.7}
-.search{margin-top:25px;padding:14px;width:min(90%,420px);border:1px solid #65428b;border-radius:10px;background:#1a1028;color:white;font-size:16px;outline:none}
-.search:focus{border-color:#c084fc;box-shadow:0 0 12px #9333ea55}
+:root{
+    --purple:#a855f7;
+    --light-purple:#d8b4fe;
+    --glass:rgba(255,255,255,.055);
+    --glass-border:rgba(216,180,254,.17);
+    --muted:#b9adc9;
+}
 
-.categories{padding:25px 8% 35px}
-.category-heading{text-align:center;margin-bottom:20px}
-.category-heading h2{color:#e9d5ff;font-size:25px}
-.category-heading p{color:#a99ab9;margin-top:8px;font-size:13px}
-.category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.category-btn{padding:17px 10px;border:1px solid #58327b;border-radius:12px;background:linear-gradient(135deg,#21102f,#160d24);color:#d8b4fe;font-size:14px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.25s;text-transform:capitalize;overflow-wrap:anywhere}
-.category-btn:hover{transform:translateY(-3px);border-color:#c084fc;box-shadow:0 0 17px #9333ea55;color:white}
-.category-btn.active{background:linear-gradient(135deg,#9333ea,#6b21a8);border-color:#d8b4fe;color:white;box-shadow:0 0 17px #9333ea66}
+body{
+    font-family:'Outfit',sans-serif;
+    background:
+        radial-gradient(ellipse at 15% 10%,rgba(126,34,206,.19),transparent 38%),
+        radial-gradient(ellipse at 85% 40%,rgba(88,28,135,.17),transparent 38%),
+        #090611;
+    color:white;
+    min-height:100vh;
+}
 
-.gallery{padding:25px 8% 70px}
-.gallery h2{margin-bottom:25px}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.card{background:#171022;border:1px solid #30203f;border-radius:15px;overflow:hidden;transition:transform .2s}
-.card:hover{transform:translateY(-5px);border-color:#a855f7}
-.preview{height:230px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#38145c,#111827,#7028a8);color:#ead5ff;font-size:24px;font-weight:bold}
-.preview img{width:100%;height:100%;object-fit:cover}
-.details{padding:18px}
-.details h3{overflow-wrap:anywhere}
-.details p{color:#b9adc9;margin:10px 0 16px;font-size:14px;line-height:1.5}
-.buy{display:block;width:100%;border:1px solid #c084fc;border-radius:9px;padding:13px;background:linear-gradient(110deg,#7e22ce,#a855f7,#7e22ce);background-size:200% 100%;color:white;font-size:15px;font-weight:bold;cursor:pointer;transition:.3s}
-.buy:hover{background-position:100% 0;transform:translateY(-2px);box-shadow:0 0 18px #a855f788}
-.buy:disabled{opacity:.6;cursor:wait;transform:none}
-.empty-message{color:#b9adc9;text-align:center;padding:25px;grid-column:1/-1}
+button,input{
+    font-family:inherit;
+}
 
-footer{text-align:center;padding:25px 15px;color:#e9d5ff;background:#171022;border-top:1px solid #a855f7;margin-top:40px}
-footer h3{color:#c084fc;margin-bottom:15px}
-footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}
-footer p{font-size:13px;margin-top:18px}
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+    padding:22px 8%;
+    background:rgba(15,9,26,.72);
+    border-bottom:1px solid var(--glass-border);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:29px;
+    font-weight:700;
+    letter-spacing:-1px;
+    color:#d8b4fe;
+    text-shadow:0 0 22px #a855f788;
+}
+
+header a,footer a{
+    color:white;
+    text-decoration:none;
+}
+
+header nav{
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+header nav a{
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.3px;
+    color:#d8b4fe;
+    transition:.3s;
+}
+
+header nav a:hover{
+    color:white;
+    text-shadow:0 0 14px var(--purple);
+}
+
+.hero{
+    text-align:center;
+    padding:85px 20px 45px;
+}
+
+.hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(35px,6vw,64px);
+    font-weight:700;
+    letter-spacing:-2px;
+    margin-bottom:17px;
+}
+
+.hero h1 span{
+    background:linear-gradient(90deg,#c084fc,#e9d5ff,#a855f7);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.8;
+}
+
+.search{
+    margin-top:28px;
+    padding:16px 20px;
+    width:min(90%,450px);
+    border:1px solid var(--glass-border);
+    border-radius:15px;
+    background:rgba(255,255,255,.055);
+    backdrop-filter:blur(15px);
+    color:white;
+    font-size:15px;
+    outline:none;
+    transition:.3s;
+}
+
+.search::placeholder{
+    color:#a99ab9;
+}
+
+.search:focus{
+    border-color:#c084fc;
+    box-shadow:0 0 22px #9333ea44;
+    background:rgba(255,255,255,.09);
+}
+
+.categories{
+    padding:30px 8% 40px;
+}
+
+.category-heading{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.category-heading h2{
+    font-family:'Space Grotesk',sans-serif;
+    color:#f3e8ff;
+    font-size:28px;
+    font-weight:700;
+}
+
+.category-heading p{
+    color:var(--muted);
+    margin-top:9px;
+    font-size:14px;
+}
+
+.category-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:15px;
+}
+
+.category-btn{
+    padding:19px 12px;
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    background:rgba(255,255,255,.045);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    color:#d8b4fe;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.4px;
+    cursor:pointer;
+    transition:.3s;
+    text-transform:capitalize;
+    overflow-wrap:anywhere;
+}
+
+.category-btn:hover{
+    transform:translateY(-4px);
+    border-color:#c084fc;
+    background:rgba(168,85,247,.13);
+    box-shadow:0 8px 25px #9333ea30;
+    color:white;
+}
+
+.category-btn.active{
+    background:linear-gradient(135deg,rgba(147,51,234,.8),rgba(107,33,168,.75));
+    border-color:#d8b4fe;
+    color:white;
+    box-shadow:0 0 24px #9333ea55;
+}
+
+.gallery{
+    padding:30px 8% 75px;
+}
+
+.gallery-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:28px;
+}
+
+.gallery h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:27px;
+    color:#f3e8ff;
+}
+
+.gallery-label{
+    font-size:12px;
+    padding:8px 14px;
+    border-radius:30px;
+    color:#d8b4fe;
+    background:rgba(168,85,247,.12);
+    border:1px solid var(--glass-border);
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:24px;
+}
+
+.card{
+    background:rgba(255,255,255,.055);
+    border:1px solid var(--glass-border);
+    border-radius:19px;
+    overflow:hidden;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+
+.card:hover{
+    transform:translateY(-7px);
+    border-color:#a855f7;
+    box-shadow:0 15px 40px rgba(126,34,206,.2);
+}
+
+.preview{
+    height:235px;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    background:linear-gradient(145deg,#38145c,#111827,#7028a8);
+    color:#ead5ff;
+    font-size:21px;
+    font-weight:700;
+}
+
+.preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform .5s;
+}
+
+.card:hover .preview img{
+    transform:scale(1.045);
+}
+
+.details{
+    padding:20px;
+}
+
+.details h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:19px;
+    font-weight:700;
+    overflow-wrap:anywhere;
+}
+
+.details p{
+    color:var(--muted);
+    margin:10px 0 18px;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.buy{
+    display:block;
+    width:100%;
+    border:1px solid rgba(216,180,254,.45);
+    border-radius:12px;
+    padding:14px;
+    background:linear-gradient(110deg,#7e22ce,#a855f7,#7e22ce);
+    background-size:200% 100%;
+    color:white;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.buy:hover{
+    background-position:100% 0;
+    transform:translateY(-2px);
+    box-shadow:0 0 22px #a855f788;
+}
+
+.buy:disabled{
+    opacity:.6;
+    cursor:wait;
+    transform:none;
+}
+
+.empty-message{
+    color:var(--muted);
+    text-align:center;
+    padding:35px 20px;
+    grid-column:1/-1;
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    background:var(--glass);
+}
+
+footer{
+    text-align:center;
+    padding:35px 15px;
+    color:#e9d5ff;
+    background:rgba(255,255,255,.035);
+    border-top:1px solid var(--glass-border);
+    margin-top:40px;
+    backdrop-filter:blur(18px);
+}
+
+footer h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:24px;
+    color:#c084fc;
+    margin-bottom:18px;
+}
+
+footer nav{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:18px;
+}
+
+footer nav a{
+    font-size:13px;
+    color:#c4b5d5;
+    transition:.3s;
+}
+
+footer nav a:hover{
+    color:white;
+}
+
+footer p{
+    font-size:13px;
+    margin-top:22px;
+    color:#a99ab9;
+}
 
 @media(max-width:900px){
-.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .cards{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .category-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
 }
+
 @media(max-width:600px){
-header{padding:18px 5%}
-.gallery,.categories{padding-left:5%;padding-right:5%}
-header nav{gap:14px}
-.cards{grid-template-columns:1fr}
-.category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.category-btn{padding:14px 7px;font-size:12px}
+    header{
+        padding:18px 5%;
+    }
+
+    header nav{
+        gap:14px;
+    }
+
+    .hero{
+        padding-top:65px;
+    }
+
+    .gallery,.categories{
+        padding-left:5%;
+        padding-right:5%;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .category-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+    }
+
+    .category-btn{
+        padding:15px 8px;
+        font-size:12px;
+    }
+
+    .gallery h2{
+        font-size:23px;
+    }
 }
 </style>
 </head>
 
 <body>
+
 <header>
     <div class="logo">WallHaven.</div>
     <nav>
@@ -81,7 +430,7 @@ header nav{gap:14px}
 
 <section class="hero">
     <h1>Your Screen, <span>Your Style.</span></h1>
-    <p>Discover premium wallpapers for your PC and mobile.</p>
+    <p>Discover beautiful free and premium wallpapers for your PC and mobile.</p>
     <input class="search" id="search" type="text" placeholder="Search wallpapers...">
 </section>
 
@@ -90,13 +439,18 @@ header nav{gap:14px}
         <h2>Explore Categories</h2>
         <p>Choose your favourite wallpaper category</p>
     </div>
+
     <div class="category-grid" id="categoryGrid">
         <button class="category-btn active" data-category="all">All Wallpapers</button>
     </div>
 </section>
 
 <section class="gallery" id="gallery">
-    <h2 id="galleryTitle">Explore Wallpapers</h2>
+    <div class="gallery-heading">
+        <h2 id="galleryTitle">Free Wallpapers</h2>
+        <span class="gallery-label" id="galleryLabel">FREE COLLECTION</span>
+    </div>
+
     <div class="cards" id="cards">
         <p>Loading wallpapers...</p>
     </div>
@@ -161,19 +515,36 @@ function createCategories() {
 
     categoryGrid.innerHTML = "";
 
-    const allButton = document.createElement("button");
-    allButton.className = "category-btn active";
-    allButton.textContent = "All Wallpapers";
-    allButton.dataset.category = "all";
-    allButton.addEventListener("click", () => selectCategory("all"));
-    categoryGrid.appendChild(allButton);
+    const buttons = [
+        {name:"All Wallpapers", value:"all"},
+        {name:"Free", value:"free"},
+        {name:"Premium", value:"premium"}
+    ];
+
+    buttons.forEach(item => {
+        const button = document.createElement("button");
+        button.className = "category-btn";
+        button.textContent = item.name;
+        button.dataset.category = item.value;
+
+        if (item.value === "all") {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", () => selectCategory(item.value));
+        categoryGrid.appendChild(button);
+    });
 
     categories.forEach(category => {
         const button = document.createElement("button");
         button.className = "category-btn";
         button.textContent = category;
-        button.dataset.category = category;
-        button.addEventListener("click", () => selectCategory(category));
+        button.dataset.category = "category:" + category;
+
+        button.addEventListener("click", () => {
+            selectCategory("category:" + category);
+        });
+
         categoryGrid.appendChild(button);
     });
 }
@@ -188,8 +559,22 @@ function selectCategory(category) {
         );
     });
 
-    document.getElementById("galleryTitle").textContent =
-        category === "all" ? "Explore Wallpapers" : category + " Wallpapers";
+    const title = document.getElementById("galleryTitle");
+    const label = document.getElementById("galleryLabel");
+
+    if (category === "all") {
+        title.textContent = "Free Wallpapers";
+        label.textContent = "FREE COLLECTION";
+    } else if (category === "free") {
+        title.textContent = "Free Wallpapers";
+        label.textContent = "FREE COLLECTION";
+    } else if (category === "premium") {
+        title.textContent = "Premium Wallpapers";
+        label.textContent = "PREMIUM COLLECTION";
+    } else {
+        title.textContent = category.replace("category:", "") + " Wallpapers";
+        label.textContent = "FREE CATEGORY";
+    }
 
     renderWallpapers();
 }
@@ -200,10 +585,26 @@ function renderWallpapers() {
         .toLowerCase();
 
     const filtered = allWallpapers.filter(wallpaper => {
-        const matchesCategory =
-            selectedCategory === "all" ||
-            String(wallpaper.category || "").toLowerCase() ===
-            selectedCategory.toLowerCase();
+        const price = Number(wallpaper.price_paise);
+
+        const isFree = Number.isFinite(price) && price === 0;
+        const isPremium = Number.isFinite(price) && price > 0;
+
+        let matchesCategory = false;
+
+        if (selectedCategory === "all" || selectedCategory === "free") {
+            matchesCategory = isFree;
+        } else if (selectedCategory === "premium") {
+            matchesCategory = isPremium;
+        } else if (selectedCategory.startsWith("category:")) {
+            const categoryName = selectedCategory
+                .replace("category:", "")
+                .toLowerCase();
+
+            matchesCategory =
+                isFree &&
+                String(wallpaper.category || "").toLowerCase() === categoryName;
+        }
 
         const matchesSearch =
             String(wallpaper.title || "").toLowerCase().includes(term) ||
@@ -218,7 +619,13 @@ function renderWallpapers() {
     if (!filtered.length) {
         const message = document.createElement("p");
         message.className = "empty-message";
-        message.textContent = "No wallpapers found in this category.";
+
+        if (selectedCategory === "premium") {
+            message.textContent = "No premium wallpapers found.";
+        } else {
+            message.textContent = "No free wallpapers found in this category.";
+        }
+
         cardsContainer.appendChild(message);
         return;
     }
@@ -476,5 +883,6 @@ document.getElementById("search").addEventListener("input", renderWallpapers);
 
 loadWallpapers();
 </script>
+
 </body>
 </html>
